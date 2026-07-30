@@ -39,6 +39,7 @@ button {
 }
 
 .tour-prd {
+    /* display : 어떤방식으로 배치? none, block, inline, inline-block, flex */
     display: inline-block;
     width: 200px;
     border: 1px solid green;

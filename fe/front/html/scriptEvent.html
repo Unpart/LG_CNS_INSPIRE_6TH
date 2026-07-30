@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+            <!-- Latest compiled and minified CSS -->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+            <!-- Latest compiled JavaScript -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <!-- <button type="button" class="btn btn-info" onclick="signInHandler(event)">SignIn</button> -->
+            <button type="button" class="btn btn-info" id="handler">SignIn</button>
+        </div>
+        <script>
+            const signInHandler = (event) => {
+                window.alert(`signIn button click`);
+                console.log(`debug >>>> event ${event.target}`);
+                console.log(`debug >>>> event ${event.target.value}`);
+            }
+            /////////////////////////////////////////////////////////////////
+            // case 01
+            // document.querySelector("#handler").onclick = () => {
+            //     window.alert(`signIn button click`);
+            // } 
+            
+            ///////////////////////////////////////////////////////////
+            // case 02
+            document.querySelector("#handler").addEventListener('click', () => {
+                window.alert(`signIn button click`);
+            })
+        </script>
+    </body>
+</html>
