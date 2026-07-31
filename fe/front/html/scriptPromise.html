@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button type="button" id="btn">users</button>
+    <script>
+        // Promise
+        // const promise = new Promise( (resolve, reject) => {
+        //     setTimeout(() => {
+        //         // resolve({status : 200, data : {message :'success'}});
+        //         reject({status : 404})
+        //     }, 5000);
+        // });
+        // console.log(`debug >>>> promise `, promise);
+
+        // promise
+        //     .then ((response) => {
+        //         console.log(`debug >>>> response `, response);
+        //     })
+        //     .catch( error => {
+        //         console.log(`debug >>>> error `, error);
+        //     })
+
+        // script : fetch api, third parts : axios lib
+        document.querySelector("#btn").onclick = async (e) => {
+            // await fetch('../server/users.json')
+            // // fetch('../server/data.json')
+            // // fetch('https://fakestoreapi.com/products')
+            // .then(response => response.json())
+            // .then(data => {
+            //     console.log(`debug >>>> data `, data);
+            // })
+            // .catch( error => {
+            //     console.log(`debug >>>> error ${error}`);
+            // });
+            try {
+                const response = await fetch('../server/users.json');
+                console.log(`debug >>>> response `,response);
+                const data = await response.json();
+                console.log(`debug >>>> fetch data `,data);
+                data.forEach((object, idx) => {
+                    console.log(`debug >>>> data idx ${idx}`,object);
+                    console.log(`debug >>>> data idx ${idx}`,object.name);
+                });
+            } catch(error) {
+            console.log(`debug >>>> error ${error}`);
+            }
+        }
+            
+    </script>
+</body>
+</html>

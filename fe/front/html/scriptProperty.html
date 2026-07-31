@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../css/coffee.css">
+    </head>
+    <body>
+        <div>
+            <h1>Inspire Coffee</h1>
+            <img src="../img/coffee-blue.jpg" width="200" height="200">
+        </div>
+        <div>
+            <button type="button" id="btn">Inspire Coffee</button>
+        </div>
+        <script>
+            /*
+            Q)
+            - step01 : 버튼의 이벤트를 감지하는 함수정의
+            - step02 : 이벤트 발생시 h1, img 태그에 접근하여
+            - step03 : 이미지 src 속성에 접근하여  coffee-pink.jpg 변경 
+            - step04 : h1 접근해서 텍스트를  Lgcns Coffee 변경 
+            - 필요에 따라서 태그에 선택자를 정의할 수 있음.
+
+            hint) 특정영역에 text 삽입시 : textContent, innerHTML, innerText 
+
+            - step05 : 테스트 완료되면 ai agent 도움을 받아서 css 작성하고 꾸미기
+            */
+            // document.querySelector("#btn").onclick = function() {
+            //     document.querySelector("img").src = "../img/coffee-pink.jpg";
+            //     document.querySelector("h1").textContent = "Lgcns Coffee";
+            //     document.querySelector("button").textContent = "Lgcns Coffee";
+            // };
+            const btn = document.querySelector("#btn");
+            const image = document.querySelector("img");
+            const heading = document.querySelector("h1");
+
+            let isChanged = false;
+
+            btn.onclick = (e) => {
+                if (isChanged) {
+                    image.src = "../img/coffee-blue.jpg";
+                    heading.textContent = "Inspire Coffee";
+                    btn.textContent = "Inspire Coffee";
+                } else {
+                    image.src = "../img/coffee-pink.jpg";
+                    heading.textContent = "Lgcns Coffee";
+                    btn.textContent = "Lgcns Coffee";
+                }
+                isChanged = !isChanged;
+            };
+        </script>
+    </body>
+</html>

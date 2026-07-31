@@ -1,0 +1,124 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px;
+
+    background: linear-gradient(135deg, #edf6ff, #fff1f5);
+    color: #253044;
+    font-family: Arial, sans-serif;
+}
+
+/* 커피 카드 */
+body > div:first-child {
+    width: min(380px, 100%);
+    padding: 35px;
+
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 24px;
+    box-shadow: 0 15px 40px rgba(43, 62, 91, 0.13);
+}
+
+h1 {
+    margin: 0 0 28px;
+
+    color: #243b64;
+    font-size: 32px;
+    letter-spacing: -1px;
+
+    transition: color 0.3s ease;
+}
+
+img {
+    display: block;
+    width: 240px;
+    height: 240px;
+    margin: 0 auto;
+
+    object-fit: cover;
+    border: 8px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 10px 25px rgba(37, 48, 68, 0.18);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.04) rotate(2deg);
+    box-shadow: 0 15px 32px rgba(37, 48, 68, 0.25);
+}
+
+/* 버튼 영역 */
+body > div:last-of-type {
+    text-align: center;
+}
+
+button {
+    padding: 14px 24px;
+
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+
+    background: linear-gradient(135deg, #527fc4, #e67591);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 7px 18px rgba(82, 127, 196, 0.25);
+
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 11px 23px rgba(82, 127, 196, 0.32);
+}
+
+button:active {
+    transform: translateY(0);
+    opacity: 0.85;
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(82, 127, 196, 0.35);
+    outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 20px;
+    }
+
+    body > div:first-child {
+        padding: 28px 20px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    img {
+        width: 200px;
+        height: 200px;
+    }
+
+    button {
+        width: 100%;
+    }
+}

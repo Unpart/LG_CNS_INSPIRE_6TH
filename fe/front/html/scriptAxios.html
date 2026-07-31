@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.19.0/dist/axios.min.js"></script>
+    <link href="../css/axios.css" rel="stylesheet">
+</head>
+<body>
+    <h1>상품목록</h1>
+    <div class="container"></div>
+    <script>
+        ary = [];
+        // image (사이즈 조절), title, price
+        const loadData = async (e) => {
+            axios.get('https://fakestoreapi.com/products')
+                .then( response => {
+                    console.log(`debug >>>> response `, response);
+                    ary = response.data;
+                })
+                .catch( error => {
+                    console.log(`debug >>>> error ${error}`);
+                })
+                .finally( error => {
+                    console.log(`debug >>>> request complete`);
+                });
+        }
+        const makeProduct = (e) => {
+            if (ary.length === 0) {
+                setTimeout(makeProduct, 100);
+                return;
+            }
+
+            const container = document.querySelector('.container');
+
+            ary.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+
+                const description =
+                    product.description.length > 50
+                        ? product.description.slice(0, 50) + '...'
+                        : product.description;
+
+                productDiv.innerHTML = `
+                    <div class="image-box">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            class="product-image"
+                        >
+                    </div>
+
+                    <div class="product-content">
+                        <span class="category">${product.category}</span>
+
+                        <h2>${product.title}</h2>
+
+                        <p class="product-id">
+                            상품 번호: ${product.id}
+                        </p>
+
+                        <p class="description">
+                            ${description}
+                        </p>
+
+                        <div class="product-info">
+                            <strong class="price">
+                                $${product.price.toFixed(2)}
+                            </strong>
+
+                            <span class="rating">
+                                ⭐ ${product.rating.rate}
+                                (${product.rating.count}개 평가)
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(productDiv);
+            });
+        };
+
+        const init = async (e) => {
+            await loadData();
+            makeProduct();
+        }
+        init();
+    </script>
+</body>
+</html>
