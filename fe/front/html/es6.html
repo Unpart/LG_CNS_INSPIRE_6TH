@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        // spread operator
+        // 객체 또는 배열값을 다른 객체, 배열로 복제하거나 옮길 때 사용
+        // ...
+        let objOriginal = {
+            a : 10,
+            b : 20
+        };
+        let objNew = objOriginal;
+        // console.log(`debug === `, objNew === objOriginal);
+        // objNew.a = 20;
+        // console.log(`debug objNew `, objNew);
+        // console.log(`debug objOriginal `, objOriginal);
+
+        console.log(`spread operator`);
+        objNew = {...objOriginal};
+        objNew.a = 20;
+        console.log(`debug objNew `, objNew);
+        console.log(`debug objOriginal `, objOriginal);
+
+        // function(params) == component(props)
+
+        // 구조분해(destructuring)
+        // props(내장객체)
+        // props.a, props.b
+        // a, b
+        let {a, b} = objOriginal;
+
+        let ary = [1, 2, 3];
+        let newAry = {...ary};
+
+        // Optional Chaining(2020)
+        // 객체 속성값의 유효성을 체크
+        // ?.
+        const user = {
+            name : {
+                first : 'lim',
+                last : 'js'
+            },
+            address : {
+                city : 'seoul',
+                postcode : '123-456'
+            }
+        }
+
+        // const postcode = user.address && user.address.postcode;
+        const postcode = user.address?.postcode;
+
+        // 널 병합 연산자(Nullish Coalescing Operator)
+        // ?? : null, undefined
+        const city = user.address?.city ?? 'busan';
+
+        // Exhanced Object Literals - 축약문법
+        let lang = 'react.js';
+
+        let subject = {
+            // lang : lang
+            lang, 
+            coding() {
+                console.log(`coding`);
+            }
+        }
+    </script>
+</body>
+</html>
