@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import LibraryPage from './pages/sample/LibraryPage';
+import ButtonPage from './pages/meterial/ButtonPage';
+import CommentPage from './pages/sample/CommentPage';
+import CapacityPage from './pages/reactive/CapacityPage'
 
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(
@@ -12,9 +15,24 @@ import LibraryPage from './pages/sample/LibraryPage';
 //   </React.StrictMode>
 // );
 
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//   <LibraryPage />
+// );
+
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//   <ButtonPage />
+// );
+
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//   <CommentPage />
+// );
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <LibraryPage />
+  <CapacityPage />
 );
 
 // If you want to start measuring performance in your app, pass a function

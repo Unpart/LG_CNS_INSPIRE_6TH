@@ -21,7 +21,10 @@ const LibraryPage = () => {
             {
                 books.filter((book) => book.category === 'lang')
                 .map((book, idx) => {
-                    return <Book bookName={book.bookName} />
+                    return <Book    key={idx}
+                                    book={book}
+                                    bookName={book.bookName} 
+                                    price={book.price} />
                 })
             }
         </div>
