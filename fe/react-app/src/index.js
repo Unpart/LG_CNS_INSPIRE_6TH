@@ -1,38 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import LibraryPage from './pages/sample/LibraryPage';
-import ButtonPage from './pages/meterial/ButtonPage';
-import CommentPage from './pages/sample/CommentPage';
-import CapacityPage from './pages/reactive/CapacityPage'
 
+// import App from './App';
+// // const root = ReactDOM.createRoot(document.getElementById('root'));
+// // root.render(
+// //   <React.StrictMode>
+// //     <App />
+// //   </React.StrictMode>
+// // );
+
+// import LibraryPage from './pages/sample/LibraryPage';
+// // const root = ReactDOM.createRoot(document.getElementById('root'));
+// // root.render(
+// //   <LibraryPage />
+// // );
+
+// import ButtonPage from './pages/meterial/ButtonPage';
+// // const root = ReactDOM.createRoot(document.getElementById('root'));
+// // root.render(
+// //   <ButtonPage />
+// // );
+
+// import CommentPage from './pages/sample/CommentPage';
+// // const root = ReactDOM.createRoot(document.getElementById('root'));
+// // root.render(
+// //   <CommentPage />
+// // );
+
+// import CapacityPage from './pages/reactive/CapacityPage'
+// // const root = ReactDOM.createRoot(document.getElementById('root'));
+// // root.render(
+// //   <CapacityPage />
+// // );
+
+// import EventPage from './pages/event/EventPage';
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>
+//   <EventPage />
 // );
 
+// import TestRouterApp from './TestRouterApp';
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(
-//   <LibraryPage />
+//   <TestRouterApp />
 // );
 
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(
-//   <ButtonPage />
-// );
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(
-//   <CommentPage />
-// );
-
+import RenderingPage from './pages/rendering/RenderingPage';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <CapacityPage />
+  <RenderingPage />
 );
 
 // If you want to start measuring performance in your app, pass a function

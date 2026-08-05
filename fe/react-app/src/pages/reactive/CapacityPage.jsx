@@ -8,21 +8,21 @@ const CapacityPage = () => {
     // 해당함수는 양방향 실시간 소통이 이루어져야한다...어떻게?
     // let cnt = 0;
     // solution -> hook state : useState()
+    const capacity = 10;
+
     let [cnt, setCnt] = useState(0);
+    let [full, setFull] = useState(false);
+    let [empty, setEmpty] = useState(false);
 
     const upCntHandler = (e) => {
-        if(cnt < 10) {
-            // cnt = cnt + 1;
-            setCnt(cnt => cnt + 1);
-            // console.log(`debug >>>> upCntHandler ${cnt}`);
-        }
+        // cnt = cnt + 1;
+        setCnt(cnt => cnt + 1);
+        // console.log(`debug >>>> upCntHandler ${cnt}`);
     }
-    const downCntHandler = (e) => {
-        if(cnt > 0) {            
-            // cnt = cnt - 1;
-            setCnt(cnt => cnt - 1);
-            // console.log(`debug >>>> downCntHandler ${cnt}`);
-        }
+    const downCntHandler = (e) => {  
+        // cnt = cnt - 1;
+        setCnt(cnt => cnt - 1);
+        // console.log(`debug >>>> downCntHandler ${cnt}`);
     }
 
     // side effect 으로 렌더링 이후 작업이 필요한 경우...
@@ -30,6 +30,8 @@ const CapacityPage = () => {
     useEffect(() => {
         console.log(`debug >>>> CapacityPage lifecycle mount, unmount`);
         console.log(`debug >>>> side effect render cnt ${cnt}`);
+        setFull(cnt >= capacity);
+        setEmpty(cnt <= 0);
     }, [cnt]);
 
     /////////////////////////////////////////////////////
@@ -42,8 +44,8 @@ const CapacityPage = () => {
    return(
     <div>
         <p>입장인원 : {cnt}</p>
-        <Button title="입장" onClick={(e) => upCntHandler()}/>
-        <Button title="퇴장" onClick={(e) => downCntHandler()}/>
+        <Button title="입장" onClick={(e) => upCntHandler()} disabled={full}/>
+        <Button title="퇴장" onClick={(e) => downCntHandler()} disabled={empty}/>
     </div>
    );
 }

@@ -12,5 +12,12 @@
             "writer" : "박선아",
             "comment" : "강사님과 함께하는 즐겁지아니한 React..."
         }
+    ],
+    "users" : [
+        {
+            "email" : "jslim9413@gmail.com",
+            "pswd" : "1234",
+            "name" : "임정섭"
+        }
     ]
 }
