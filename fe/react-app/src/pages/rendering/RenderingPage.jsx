@@ -6,7 +6,7 @@ import LoginButton from "../../components/rendering/LoginButton";
 const RenderingPage = () => {
     
     // script
-    const [flag, setFlag] = useState(true);
+    const [flag, setFlag] = useState(false);
     // UI
     return(
         <div>
