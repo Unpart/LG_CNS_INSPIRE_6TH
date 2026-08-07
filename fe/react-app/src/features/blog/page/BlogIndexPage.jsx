@@ -1,342 +1,238 @@
-import Button from "../../../components/styled/Button";
 import styled from "styled-components";
+import Button from "../../../components/styled/Button" ;
 import BlogList from "../list/BlogList";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import api from "../../../api/axios";
+import '../ui/blog.css';
 import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
     box-sizing: border-box;
-    min-height: 100vh;
     width: 100%;
-    padding: 64px 20px 88px;
+    min-height: calc(100vh - 64px);
+    padding: 64px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background:
-        radial-gradient(circle at 85% 8%, rgba(110, 99, 237, 0.14), transparent 25%),
-        linear-gradient(145deg, #f8faff 0%, #f2f4fb 55%, #f8f6ff 100%);
-    color: #20283b;
-    font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
-    @media (max-width: 600px) {
-        padding: 38px 16px 64px;
-    }
+    background: radial-gradient(circle at 12% 12%, rgba(99, 102, 241, 0.12), transparent 28%),
+                radial-gradient(circle at 88% 80%, rgba(14, 165, 233, 0.09), transparent 30%),
+                #f7f8fc;
 `;
 
 const Container = styled.div`
+    box-sizing: border-box;
     width: 100%;
-    max-width: 920px;
+    max-width: 720px;
+    padding: 36px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.1);
 
     & > *:not(:last-child) {
-        margin-bottom: 16px;
+        margin-bottom: 22px;
     }
 
-    & > button {
-        min-height: 42px;
-        padding: 0 17px;
-        border: 1px solid #e0e3ed;
-        border-radius: 11px;
-        background: #ffffff;
-        box-shadow: 0 5px 14px rgba(60, 69, 108, 0.06);
-        color: #626a7d;
-        font-family: inherit;
-        font-size: 12px;
-        font-weight: 700;
-        transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    }
+    & > div:last-child > * { box-sizing: border-box; width: 100%; }
 
-    & > button:first-of-type {
-        border-color: #6259df;
-        background: linear-gradient(135deg, #6c63ed, #5147d5);
-        box-shadow: 0 10px 22px rgba(81, 71, 213, 0.22);
-        color: #ffffff;
-    }
-
-    & > button:hover {
-        transform: translateY(-2px);
-        border-color: #7971e5;
-        box-shadow: 0 10px 22px rgba(60, 69, 108, 0.12);
-    }
+    @media (max-width: 600px) { padding: 26px 20px; border-radius: 18px; }
 `;
 
 const WelcomeMessage = styled.div`
-    margin-bottom: 24px;
-    color: #252d43;
-    font-size: clamp(21px, 4vw, 29px);
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eef2f7;
+    font-size: 22px;
     font-weight: 800;
-    letter-spacing: -0.035em;
-
-    &::before {
-        content: "INSPIRE BLOG";
-        display: block;
-        margin-bottom: 7px;
-        color: #655ce0;
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 0.18em;
-    }
-`;
-
-const CategoryPanel = styled.section`
-    position: relative;
-    margin: 32px 0 32px;
-    padding: 25px 26px 27px;
-    overflow: hidden;
-    border: 1px solid #dcd9fa;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #f5f3ff 0%, #eeecff 100%);
-    box-shadow: 0 13px 30px rgba(86, 76, 181, 0.1);
-    backdrop-filter: blur(12px);
-
-    &::after {
-        content: "";
-        position: absolute;
-        top: -60px;
-        right: -35px;
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: rgba(112, 102, 229, 0.08);
-        pointer-events: none;
-    }
-
-    @media (max-width: 600px) {
-        padding: 19px;
-    }
-`;
-
-const CategoryHeader = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 15px;
-`;
-
-const CategoryTitle = styled.h2`
-    margin: 0;
-    color: #37305e;
-    font-size: 16px;
+    color: #172033;
     letter-spacing: -0.02em;
 `;
 
-const PostCount = styled.span`
-    padding: 6px 9px;
-    border-radius: 999px;
-    background: #f0effb;
-    color: #726bca;
-    font-size: 11px;
-`;
-
-const CategoryFilter = styled.div`
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 9px;
-`;
-
-const CategoryButton = styled.button`
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 40px;
-    padding: 0 15px;
-    border: 1px solid ${({ $active }) => ($active ? "#635bdb" : "#dedfeb")};
-    border-radius: 999px;
-    background: ${({ $active }) => ($active ? "#635bdb" : "#ffffff")};
-    box-shadow: ${({ $active }) => ($active ? "0 7px 15px rgba(99, 91, 219, 0.22)" : "none")};
-    color: ${({ $active }) => ($active ? "#ffffff" : "#676d7e")};
-    font: inherit;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+const LogoutButton = styled(Button)`
+    border: 0;
+    background-color: #ef4444;
+    color: white;
 
     &:hover {
-        border-color: #635bdb;
-        color: ${({ $active }) => ($active ? "#ffffff" : "#5149c4")};
+        background-color: #d32f2f;
+    }
+`;
+
+// ---------- 버튼 영역 ----------
+const ButtonRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    & > button {
+        box-sizing: border-box;
+        min-height: 42px;
+        border: 1px solid #dbe2ea;
+        background: #fff;
+        color: #475569;
+        font-size: 14px;
+        font-weight: 700;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    & > button:first-child {
+        border-color: #4f46e5;
+        background: #4f46e5;
+        color: #fff;
+        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.22);
+    }
+
+    & > button:hover { border-color: #6366f1; color: #4f46e5; transform: translateY(-2px); }
+    & > button:first-child:hover { background: #4338ca; color: #fff; }
+
+    & > button:focus {
+        outline: none;
+        box-shadow: none;
+    }
+`;
+
+// ---------- 카테고리 필터 UI ----------
+const CategoryRow = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    background: #f8fafc;
+`;
+
+const CategoryChip = styled.button`
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    height: 38px;
+    line-height: 1;
+
+    border: 1px solid ${(props) => (props.$active ? "#4f46e5" : "#dbe2ea")};
+    background: ${(props) => (props.$active ? "#4f46e5" : "#ffffff")};
+    color: ${(props) => (props.$active ? "#ffffff" : "#475569")};
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: ${(props) => (props.$active ? "0 6px 14px rgba(79, 70, 229, 0.22)" : "none")};
+    transition: all 0.2s ease;
+    outline: none;
+
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    &:hover {
+        border-color: #6366f1;
+        color: ${(props) => (props.$active ? "#ffffff" : "#4f46e5")};
         transform: translateY(-1px);
     }
-
-    &:focus-visible {
-        outline: 3px solid rgba(99, 91, 219, 0.2);
-        outline-offset: 2px;
-    }
 `;
-
-const CategoryIcon = styled.span`
-    font-size: 13px;
-    line-height: 1;
-`;
-
-const ListArea = styled.div`
-    position: relative;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 58px 24px 24px;
-    border: 1px solid #e1e4ed;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.76);
-    box-shadow: 0 14px 36px rgba(60, 69, 108, 0.07);
-
-    &::before {
-        content: "글 목록";
-        position: absolute;
-        top: 23px;
-        left: 25px;
-        color: #293146;
-        font-size: 16px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-    }
-
-    &::after {
-        content: "";
-        position: absolute;
-        top: 51px;
-        right: 24px;
-        left: 24px;
-        height: 1px;
-        background: #eceef4;
-    }
-
-    & > div {
-        gap: 18px;
-        margin-top: 16px;
-    }
-
-    & > div > div {
-        box-sizing: border-box;
-        width: 100%;
-        min-height: 112px;
-        padding: 22px 24px;
-        border: 1px solid #e5e8f0;
-        border-radius: 16px;
-        background: rgba(255, 255, 255, 0.94);
-        box-shadow: 0 8px 24px rgba(60, 69, 108, 0.06);
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    & > div > div:hover {
-        transform: translateY(-3px);
-        border-color: #d2cff5;
-        background: #ffffff;
-        box-shadow: 0 15px 32px rgba(60, 69, 108, 0.11);
-    }
-
-    & > div > div p {
-        margin: 0;
-        color: #293146;
-        font-size: 18px;
-        letter-spacing: -0.02em;
-    }
-
-    @media (max-width: 600px) {
-        padding: 55px 15px 15px;
-        border-radius: 17px;
-
-        &::before {
-            top: 20px;
-            left: 17px;
-        }
-
-        &::after {
-            top: 48px;
-            right: 15px;
-            left: 15px;
-        }
-    }
-`;
-
-export const categories = [
-    { value: 'all', label: '전체', icon: '✦' },
-    { value: 'front-end', label: '프론트엔드', icon: '🖥️' },
-    { value: 'back-end', label: '백엔드', icon: '⚙️' },
-    { value: 'database', label: '데이터베이스', icon: '🗄️' },
-    { value: 'devops', label: 'DevOps', icon: '☁️' },
-    { value: 'daily', label: '개발 일상', icon: '☕' },
-];
-
 // blog property - title, content, category, email(pk)
 const BlogIndexPage = () => {
+    
+    const CATEGORIES = ["전체", "개발", "생활", "취미", "일상"];
+    
     const user = localStorage.getItem('user');
-    const [blog, setBlog] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('all');
+
+    const [blogs , setBlogs] = useState([]);
+    // const blogs = [
+    //     {
+    //         "title"    : "til 작성",
+    //         "content"  : "component",
+    //         "category" : "front-end",
+    //         "email"    : user
+    //     },
+    //     {
+    //         "title"    : "링거(술)",
+    //         "content"  : "java",
+    //         "category" : "back-end",
+    //         "email"    : user
+    //     }
+    // ];
 
     /*
     Q)
-    - axios 통신(get(blog), params X)
-    - 데이터를 reactive state 관리(setXXXX)
-    - 렌더링 시점에 데이터 바인딩이 X, effect 필요함
+    - axios 통신(get(blogs) , params X)
+    - 데이터를 reactive state 관리(setXXXX) 
+    - 렌더링시점에 데이터 바인딩이 X, side effect  필요함!!
     */
     const loadData = async () => {
         // json-server version
-        await api.get('/blog')
-                    .then(response => {
-                        console.log(`debug >>>> axios request success`, response);
-                        if(response.status === 200) {
-                            setBlog(response.data);
-                        }
-                    })
-                    .catch( error => {
-                        console.log(`debug >>>> axios request error`, error);
-                    });
+        await api.get(`/blogs`)
+                .then( response => {
+                    console.log(`debug >>>> axios request success` , response);  
+                    if(response.status === 200) {
+                        setBlogs(response.data);
+                    }
+                })
+                .catch( error => {
+                    console.log(`debug >>>> axios request error` , error); 
+                });
     }
-
     useEffect(() => {
-        loadData();
-    },[])
+        loadData() ;
+    }, []);
+    
+    
+    // 선택된 카테고리에 따라 blogs 필터링
+    const [selectedCategory, setSelectedCategory] = useState("전체");
+    // case 01
+    // const filteredBlogs = selectedCategory === "전체"
+    //     ? blogs
+    //     : blogs.filter((blog) => blog.category === selectedCategory);
 
-    const filteredBlog = selectedCategory === 'all'
-        ? blog
-        : blog.filter((item) => item.category === selectedCategory);
+    // case 02 : useMemo() - 성능개선을 위해서
+    const filteredBlogs = useMemo(() => {
+        return selectedCategory === "전체"
+        ? blogs
+        : blogs.filter((blog) => blog.category === selectedCategory);
+    }, [blogs, selectedCategory]);
+        
+
 
     const moveUrl = useNavigate();
-
+    // handler
     const writeHandler = (e) => {
-        moveUrl('/blog/write');
-    }
+        moveUrl('/blogs/write'); 
+    };
 
-    return(
+    return (
         <Wrapper>
             <Container>
                 {user && <WelcomeMessage>{user}님 환영합니다.</WelcomeMessage>}
-                <Button title='글 작성하기' onClick={(e) => writeHandler(e)}></Button>
-                &nbsp;&nbsp;&nbsp;
-                <Button title='로그아웃'></Button>
-                &nbsp;&nbsp;&nbsp;
-                <Button title='기상예보'></Button>
+                <ButtonRow>
+                    <Button title='글 작성하기'
+                            onClick={(e) => writeHandler(e)}></Button>
+                    <Button title='로그아웃'></Button>
+                    <Button title='기상예보'></Button>
+                </ButtonRow>
 
-                <CategoryPanel>
-                    <CategoryHeader>
-                        <CategoryTitle>카테고리</CategoryTitle>
-                        <PostCount>게시글 {filteredBlog.length}개</PostCount>
-                    </CategoryHeader>
+                <CategoryRow>
+                    {CATEGORIES.map((category) => (
+                        <CategoryChip
+                            key={category}
+                            $active={category === selectedCategory}
+                            onClick={() => setSelectedCategory(category)}
+                        >
+                            {category}
+                        </CategoryChip>
+                    ))}
+                </CategoryRow>
 
-                    <CategoryFilter aria-label="블로그 카테고리 필터">
-                        {categories.map((category) => (
-                            <CategoryButton
-                                key={category.value}
-                                type="button"
-                                $active={selectedCategory === category.value}
-                                aria-pressed={selectedCategory === category.value}
-                                onClick={() => setSelectedCategory(category.value)}
-                            >
-                                <CategoryIcon aria-hidden="true">{category.icon}</CategoryIcon>
-                                {category.label}
-                            </CategoryButton>
-                        ))}
-                    </CategoryFilter>
-                </CategoryPanel>
-
-                <ListArea>
-                    <BlogList ary={filteredBlog}/>
-                </ListArea>
+                <BlogList ary={filteredBlogs || []}/>
 
             </Container>
         </Wrapper>
     );
 }
-
-export default BlogIndexPage;
+export default BlogIndexPage ;

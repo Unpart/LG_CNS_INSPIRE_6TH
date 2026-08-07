@@ -32,7 +32,7 @@ const SignInPage = () => {
         const loggedInUser = response.data[0];
         localStorage.setItem("user", loggedInUser.email);
         window.alert("로그인에 성공했습니다.");
-        navigate("/blog/index", { replace: true });
+        navigate("/blogs/index", { replace: true });
         return;
       }
 

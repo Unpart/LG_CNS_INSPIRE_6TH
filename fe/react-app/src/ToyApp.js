@@ -15,9 +15,9 @@ const ToyApp = () => {
                 <Route path="/users/signIn" element={<SignInPage/>}/>
                 
                 {/* blog */}
-                <Route path="/blog/index" element={<BlogIndexPage/>}/>
-                <Route path="/blog/write" element={<BlogWritePage/>}/>
-                <Route path="/blog/read/:blogId" element={<BlogReadPage/>}/>
+                <Route path="/blogs/index" element={<BlogIndexPage/>}/>
+                <Route path="/blogs/write" element={<BlogWritePage/>}/>
+                <Route path="/blogs/read/:blogId" element={<BlogReadPage/>}/>
                 
                 {/* blog - comment */}
             </Routes>

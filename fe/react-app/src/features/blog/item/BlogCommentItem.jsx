@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Button from "../../../components/styled/Button";
 
 const Wrapper = styled.div`
     box-sizing: border-box;
@@ -43,10 +43,10 @@ const Wrapper = styled.div`
     }
 `;
 
-const TitleText = styled.p`
+const CommentText = styled.p`
     margin: 0;
     color: #1e293b;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 750;
     line-height: 1.45;
     letter-spacing: -0.02em;
@@ -56,32 +56,23 @@ const TitleText = styled.p`
         color: #4f46e5;
     }
 `;
-const CategoryBadge = styled.span`
-    display: inline-flex;
-    align-items: center;
-    height: 24px;
-    padding: 0 10px;
-    margin-bottom: 8px;
-    border-radius: 999px;
-    background: #eef2ff;
-    color: #6366f1;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-`;
 
-const BlogItem = ({blog}) => {
+const BlogCommentItem = ({comment, handler}) => {
+    // 로그인 사용자 이메일
+    const user = localStorage.getItem('user');
 
-    const moveUrl = useNavigate();
-    
     return(
-        <Wrapper onClick={() => {
-            moveUrl(`/blogs/read/${blog.id}`);
-        }}>
-        {blog.category && <CategoryBadge>{blog.category}</CategoryBadge>}
-            <TitleText>{blog.title}</TitleText>
+        <Wrapper>
+            <CommentText>{comment.comment}</CommentText>
+            {
+                user === comment.email &&
+                    <div>
+                        <Button title={'삭제'}
+                                onClick={(e) => handler(e, comment.id)}/>
+                    </div>
+            }
         </Wrapper>
-    )
+    );
 }
 
-export default BlogItem ;
+export default BlogCommentItem;

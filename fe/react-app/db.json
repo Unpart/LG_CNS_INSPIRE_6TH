@@ -9,22 +9,51 @@
     {
       "name": "rafs",
       "email": "mhy7847@gmail.com",
-      "pswd": "qerbhntrhj5gtfvgwg",
+      "pswd": "1234qwer",
       "id": 2
     }
   ],
-  "blog" : [
+  "blogs": [
     {
-        "title" : "til 작성",
-        "content" : "component",
-        "category" : "front-end",
-        "email" : "mhy7847@naver.com"
+      "title": "ㅈㄷㄱㅈㄱ",
+      "content": "ㅈㄷㄱㅈㄷㄱㅈ",
+      "category": "일상",
+      "email": "mhy7847@naver.com",
+      "id": 1
     },
     {
-        "title" : "링거(술)",
-        "content" : "java",
-        "category" : "back-end",
-        "email" : "mhy7847@gmail.com"
+      "title": "react",
+      "content": "qwfgwegwsfwqadfqwadwqs",
+      "category": "개발",
+      "email": "mhy7847@naver.com",
+      "id": 2
+    },
+    {
+      "title": "live",
+      "content": "sacvsavsadvsbfd",
+      "category": "생활",
+      "email": "mhy7847@naver.com",
+      "id": 3
+    }
+  ],
+  "comments": [
+    {
+      "blogId": 1,
+      "comment": "qwfwqf",
+      "email": "mhy7847@gmail.com",
+      "id": 1
+    },
+    {
+      "blogId": 1,
+      "comment": "qfwqf",
+      "email": "mhy7847@gmail.com",
+      "id": 2
+    },
+    {
+      "blogId": 1,
+      "comment": "wegweg",
+      "email": "mhy7847@gmail.com",
+      "id": 3
     }
   ]
 }
