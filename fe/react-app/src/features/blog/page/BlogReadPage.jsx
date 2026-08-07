@@ -7,45 +7,126 @@ import TextInput from "../../../components/styled/TextInput";
 import BlogCommentList from "../list/BlogCommentList";
 
 const Wrapper = styled.div`
-    padding: 16px;
-    width: calc(100% - 32px);
+    box-sizing: border-box;
+    width: 100%;
+    min-height: calc(100vh - 64px);
+    padding: 64px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.12), transparent 28%),
+                radial-gradient(circle at 90% 85%, rgba(14, 165, 233, 0.1), transparent 30%),
+                #f7f8fc;
 `;
 
 const Container = styled.div`
+    box-sizing: border-box;
     width: 100%;
     max-width: 720px;
+    padding: 38px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.1);
 
-    & > * {
-        :not(:last-child) {
-            margin-bottom: 16px;
-        }
+    & > *:not(:last-child) {
+        margin-bottom: 20px;
     }
+
+    & > button {
+        min-height: 42px;
+        border: 1px solid #dbe2ea;
+        background: #fff;
+        color: #475569;
+        font-size: 14px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    & > button:hover {
+        border-color: #6366f1;
+        color: #4f46e5;
+        transform: translateY(-2px);
+    }
+
+    & > button:last-child {
+        border-color: #4f46e5;
+        background: #4f46e5;
+        color: #fff;
+        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
+    }
+
+    & > textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 72px;
+        margin: 0;
+        resize: vertical;
+        border: 1px solid #dbe2ea;
+        border-radius: 14px;
+        background: #f8fafc;
+        color: #1e293b;
+        font-family: inherit;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    & > textarea:focus {
+        outline: none;
+        border-color: #6366f1;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    @media (max-width: 600px) { padding: 26px 20px; border-radius: 18px; }
 `;
 
 const PostContainer = styled.div`
-    padding: 8px 16px;
-    border: 1px solid grey;
-    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    min-height: 220px;
+    padding: 30px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #6366f1, #38bdf8);
+    }
 `;
 
 const TitleText = styled.p`
-    font-size: 28px;
-    font-weight: 500;
+    margin: 0 0 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e8edf4;
+    color: #172033;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.03em;
 `;
 
 const ContentText = styled.p`
-    font-size: 20px;
-    line-height: 32px;
+    margin: 0;
+    color: #475569;
+    font-size: 17px;
+    line-height: 1.85;
     white-space: pre-wrap;
 `;
 
 const CommentLabel = styled.p`
-    font-size: 16px;
-    font-weight: 500;
+    margin: 32px 0 0;
+    color: #1e293b;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 `;
 
 const spin = keyframes`
@@ -54,20 +135,22 @@ const spin = keyframes`
 `;
 
 const Spinner = styled.div`
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
+  border: 5px solid #e0e7ff;
+  border-top: 5px solid #4f46e5;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  animation: ${spin} 1s linear infinite;
+  width: 44px;
+  height: 44px;
+  animation: ${spin} 0.8s linear infinite;
   margin: 100px auto;
 `;
 
 const WelcomeMessage = styled.div`
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    color: #333;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eef2f7;
+    color: #172033;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 `;
 
 const BlogReadPage = () => {
