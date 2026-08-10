@@ -250,6 +250,29 @@ const BlogReadPage = () => {
             })
     }
 
+    // comment update
+    const commentUpdateHandler = async (id, mention) => {
+        console.log(`debug >>>> commentUpdateHandler`); 
+        console.log(`debug >>>> commentUpdateHandler id ${id}, mention ${mention}`);
+
+        // update : axios put(전체교체), patch(부분수정)
+        await api.patch(`/comments/${id}`, {
+            comment : mention
+        })
+        .then( response => {
+            console.log(`debug >>>> axios request success`, response);
+            if(response.status === 200) {
+                setComments(ary => {
+                    return ary.map(comment =>{
+                        return comment.id === id ? {...comment, comment : mention} : comment
+                    })
+                })
+            } 
+        })
+        .catch(error => {
+            console.log(`debug >>>> axios request error`, error);
+        });
+    }
     return (
         <Wrapper>
             {!blog.id && <Spinner/>}
@@ -270,7 +293,9 @@ const BlogReadPage = () => {
                     <CommentLabel>작성된 댓글 목록</CommentLabel>
 
                     {/* BlogCommentList */}
-                    <BlogCommentList comments={comments || []} handler={commentDeleteHandler}/>
+                    <BlogCommentList comments={comments || []} 
+                        handler={commentDeleteHandler}
+                        updateHandler={commentUpdateHandler}/>
 
                     {/* 댓글 입력과 이벤트 */}
                     <TextInput height={14} value={comment} handler={(e) => {

@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     text-align: center;
 `;
 
-const BlogCommentList = ({comments, handler}) => {
+const BlogCommentList = ({comments, handler, updateHandler}) => {
     return(
         <Wrapper>
             {
@@ -29,7 +29,8 @@ const BlogCommentList = ({comments, handler}) => {
                     return <BlogCommentItem
                                 key={idx}
                                 comment={comment}
-                                handler={handler}/>
+                                handler={handler}
+                                updateHandler={updateHandler}/>
                 })
             }
         </Wrapper>

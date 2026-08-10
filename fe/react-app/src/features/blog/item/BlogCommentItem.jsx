@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import Button from "../../../components/styled/Button";
+import { useEffect, useState } from "react";
+import TextInput from "../../../components/styled/TextInput";
 
 const Wrapper = styled.div`
     box-sizing: border-box;
@@ -77,16 +79,46 @@ const CommentText = styled.p`
     }
 `;
 
-const BlogCommentItem = ({comment, handler}) => {
+const BlogCommentItem = ({comment, handler, updateHandler}) => {
     // 로그인 사용자 이메일
     const user = localStorage.getItem('user');
 
+    const [isEdit, setIsEdit] = useState(false);
+    const [mention, setMention] = useState('');
+
+    const updateMentionHandler = (e) => {
+        if(!isEdit) {
+            // 수정모드 on
+            setIsEdit(true);
+        } else {
+            /*
+            SQL
+            -   update table
+                set    column = value
+                where  id = ? ;
+            - 선택된 특정댓글의 기본키 값을 가지고 사용자가 입력한 값으로 수정
+            - UI - 일부 리렌더링(댓글 목록만)
+            - 당연한 json-server 수정이 되어야 함
+            */
+            // 수정완료모드 on
+            updateHandler(comment.id, mention); // read page : commentUpdateHandler();
+            setIsEdit(false);
+        }
+    }
+
+    useEffect(() => {
+        setMention(comment.comment);
+    }, [comment.comment]);
+
     return(
         <Wrapper>
-            <CommentText>{comment.comment}</CommentText>
+            {/* <CommentText>{comment.comment}</CommentText> */}
+            <TextInput height={16} value={mention} handler={(e) => setMention(e.target.value)} disabled={!isEdit}/>
             {
                 user === comment.email &&
                     <div>
+                        <Button title={isEdit ? '수정완료' : '수정'}
+                                onClick={(e) => updateMentionHandler(e)}/>
                         <Button title={'삭제'}
                                 onClick={(e) => handler(e, comment.id)}/>
                     </div>
