@@ -17,7 +17,7 @@ public class GuessGame {
     }
     
     public String gameFor(Scanner scan){
-        int answer = (int)(Math.random()*100);
+        int answer = (int)(Math.random()*100) + 1;
         for(int count = 1; count <= 10; count++){
             System.out.print("생각하는 숫자를 입력하세요 : ");
             int guess = scan.nextInt();
@@ -32,7 +32,7 @@ public class GuessGame {
         return "10번의 기회를 모두 소진했습니다.";
     }
     public String gameWhile(Scanner scan){
-        int answer = (int)(Math.random()*100);
+        int answer = (int)(Math.random()*100) + 1;
         int count = 1;
         while(count <= 10){
             System.out.print("생각하는 숫자를 입력하세요 : ");
@@ -49,7 +49,7 @@ public class GuessGame {
         return "10번의 기회를 모두 소진했습니다.";
     }
     public String gameDoWhile(Scanner scan){
-        int answer = (int)(Math.random()*100);
+        int answer = (int)(Math.random()*100) + 1;
         int count = 1;
         do {
             System.out.print("생각하는 숫자를 입력하세요 : ");
