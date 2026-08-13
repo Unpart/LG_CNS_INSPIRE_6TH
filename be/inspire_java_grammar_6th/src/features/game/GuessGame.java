@@ -22,7 +22,7 @@ public class GuessGame {
             System.out.print("생각하는 숫자를 입력하세요 : ");
             int guess = scan.nextInt();
             if(guess == answer) {
-                return count + "%번 만에 정답을 맞췄습니다.";
+                return count + "번 만에 정답을 맞췄습니다.";
             } else if(guess > answer) {
                 System.out.println("숫자가 너무 큽니다.");
             } else {

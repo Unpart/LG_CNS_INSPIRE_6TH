@@ -19,5 +19,7 @@ public class GuessGameApp {
         System.out.println("-------------DoWhile-------------");
         String resultDoWhile = game.gameDoWhile(scan);
         System.out.println(resultDoWhile);
+
+        scan.close();
     }
 }
