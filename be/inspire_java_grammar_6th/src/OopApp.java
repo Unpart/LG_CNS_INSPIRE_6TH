@@ -1,7 +1,9 @@
+import features.oop.service.OopService;
 import features.oop.sub.ManagerDTO;
 import features.oop.sub.StudentDTO;
 import features.oop.sub.TeacherDTO;
 import features.oop.sup.PersonDTO;
+import features.oop.util.Flag;
 
 public class OopApp {
     public static void main(String[] args) {
@@ -61,6 +63,39 @@ public class OopApp {
         for(int i = 0; i < ary.length; i++) {
             PersonDTO per = ary[i];
             System.out.println(per.personInfo());
+        }
+
+        System.out.println();
+        System.out.println();
+        System.out.println("debug >>>> 매개변수의 다형성 ");
+        System.out.println();
+
+        OopService service = new OopService();
+        // service.setAry(stu);
+        // service.setAry(manager);
+        // service.setAry(tea);
+
+        service.makePerson(Flag.STUDENT, "문한일", 20, "서울", "2026");
+        service.makePerson(Flag.TEACHER, "임정섭", 20, "서울", "java");
+        service.makePerson(Flag.MANAGER, "김혜림", 20, "서울", "교육팀");
+
+        System.out.println();
+        System.out.println("debug >>>> 정보출력");
+        PersonDTO[] result = service.getAry();
+        for(PersonDTO person : result){
+            if(person == null){
+                break;
+            }
+            System.out.println(person.personInfo());
+        }
+
+        System.out.println();
+        System.out.println("debug >>>> findPerson");
+        PersonDTO find = service.findPerson("임정섭");
+        if(find != null ){
+            System.out.println(find.personInfo());
+        } else {
+            System.out.println(">>>> Not Found!!");
         }
     }
 }
