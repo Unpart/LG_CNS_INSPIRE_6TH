@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter @Setter
 public class BlogRequestDTO {
-    private int id;
+    private int blogId;
     private String title;
     private String content;
     private String email;
@@ -27,6 +27,7 @@ public class BlogRequestDTO {
                             .title(request.getTitle())
                             .content(request.getContent())
                             .email(request.getEmail())
+                            .blogId(null)
                             .build();
     }
 }

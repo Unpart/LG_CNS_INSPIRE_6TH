@@ -1,5 +1,10 @@
 package features.blogs.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,14 +60,40 @@ public class BlogReactServiceImpl implements BlogReactService{
 
     @Override
     public int update(BlogRequestDTO request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        System.out.println("debug >>>> blog service insert params : " + request);
+        return dao.update(request);
     }
 
     @Override
     public int delete(int blogId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        System.out.println("debug >>>> blog service delete params : " + blogId);
+        return dao.delete(blogId);
+    }
+
+    @Override
+    public boolean saveToFile() {
+        System.out.println("debug >>>> blog service file save : ");
+        String path = "./blogs.txt";
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(path)))){
+            oos.writeObject(dao.findByAll());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean loadToFile() {
+        System.out.println("debug >>>> blog service file load : ");
+        String path = "./blogs.txt";
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(path)))){
+            dao.setBlogs((List<BlogResponseDTO>)ois.readObject());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
     
 }

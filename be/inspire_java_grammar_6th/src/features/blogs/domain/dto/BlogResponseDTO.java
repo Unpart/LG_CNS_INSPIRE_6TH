@@ -1,5 +1,7 @@
 package features.blogs.domain.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Setter @Getter
 @ToString
-public class BlogResponseDTO {
+public class BlogResponseDTO implements Serializable{
     
     private int status;
     private String message;

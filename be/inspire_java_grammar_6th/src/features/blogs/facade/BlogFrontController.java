@@ -3,12 +3,16 @@ package features.blogs.facade;
 import java.util.List;
 import java.util.Optional;
 
+import features.blogs.controller.DeleteController;
+import features.blogs.controller.FileContoller;
 import features.blogs.controller.InsertController;
 import features.blogs.controller.ListController;
 import features.blogs.controller.ReadController;
 import features.blogs.controller.SearchController;
+import features.blogs.controller.UpdateController;
 import features.blogs.domain.dto.BlogResponseDTO;
 import features.blogs.factory.BlogBeanFactory;
+import features.blogs.util.ResponseEntity;
 
 public class BlogFrontController {
 
@@ -18,7 +22,7 @@ public class BlogFrontController {
         factory = BlogBeanFactory.getInstance();
     }
 
-    public List<BlogResponseDTO> list(String endPoint){
+    public ResponseEntity<List<BlogResponseDTO>> list(String endPoint){
         System.out.println("debug >>>> front controller endPoint : " + endPoint);
         Object controller = factory.getBean(endPoint);
         return ((ListController)controller).list();
@@ -42,5 +46,28 @@ public class BlogFrontController {
         System.out.println("debug >>>> front controller endPoint : " + endPoint); 
         Object controller = factory.getBean(endPoint);
         return ((InsertController)controller).insert(title, content, email);
+    }
+
+    public int delete(String endPoint, int blogId) {
+        System.out.println("debug >>>> front controller endPoint : " + endPoint);
+        Object controller = factory.getBean(endPoint); 
+        return ((DeleteController)controller).delete(blogId);
+    }
+
+    public int update(String endPoint, int blogId, String title, String content) {
+        System.out.println("debug >>>> front controller endPoint : " + endPoint); 
+        Object controller = factory.getBean(endPoint);
+        return ((UpdateController)controller).update(blogId, title, content);
+    }
+
+    public boolean file(String endPoint, String action) {
+        System.out.println("debug >>>> front controller endPoint : " + endPoint);
+        FileContoller controller = (FileContoller)factory.getBean(endPoint);
+
+        if(action.equals("save")){
+            return controller.save();
+        } else {
+            return controller.load();
+        }
     }
 }

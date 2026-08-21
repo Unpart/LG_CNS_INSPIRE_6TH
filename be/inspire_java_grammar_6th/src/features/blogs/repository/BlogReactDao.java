@@ -1,6 +1,7 @@
 package features.blogs.repository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +35,11 @@ public class BlogReactDao {
         ));
     }
 
+    // 참조복사(deep copy)
+    public void setBlogs(List<BlogResponseDTO> blogs){
+        this.blogs = blogs;
+    }
+
     public List<BlogResponseDTO> findByAll() {
         System.out.println("debug >>>> blog dao findByAll()");
         return blogs;
@@ -60,6 +66,43 @@ public class BlogReactDao {
 
     public int save(BlogRequestDTO request) {
         System.out.println("debug >>>> blog dao save params : " + request);
+        /*
+        blogId stream 이용한 generator
+        hint)
+        Q) blogId = stream sorted blogId reversed + 1 
+        */        
+        int blogId = blogs.stream()
+                          .map( BlogResponseDTO::getBlogId )
+                          .sorted( Comparator.reverseOrder() )
+                          .findFirst()
+                          .orElse(0) + 1 ;
+        BlogResponseDTO response = BlogRequestDTO.toEntity(request);
+        response.setBlogId(blogId);
+
+        blogs.add(response);
+        return 0;
+    }
+
+    public int delete(int blogId) {
+        System.out.println("debug >>>> blog dao delete params : " + blogId);
+        boolean removed = blogs.removeIf(blog -> blog.getBlogId() == blogId);
+        return removed ? 1 : 0;
+    }
+
+    public int update(BlogRequestDTO request) {
+        System.out.println("debug >>>> blog dao update params : " + request);
+
+        // Q) SQL : update title = request.getTitle(), content = request.getContent()
+        //          where blogId = request.getBlogId()
+        Optional<BlogResponseDTO> result = blogs.stream()
+            .filter(blog -> blog.getBlogId() == request.getBlogId())
+            .findAny();
+        if (result.isPresent()) {
+            BlogResponseDTO blog = result.get();
+            blog.setTitle(request.getTitle());
+            blog.setContent(request.getContent());
+            return 1;
+        }
         return 0;
     }
 }
