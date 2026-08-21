@@ -1,7 +1,6 @@
 package features.blogs.facade;
 
 import java.util.List;
-import java.util.Optional;
 
 import features.blogs.controller.DeleteController;
 import features.blogs.controller.FileContoller;
@@ -28,7 +27,7 @@ public class BlogFrontController {
         return ((ListController)controller).list();
     }
 
-    public BlogResponseDTO read(String endPoint, int blogId){
+    public ResponseEntity<BlogResponseDTO> read(String endPoint, int blogId){
         System.out.println("debug >>>> front controller endPoint : " + endPoint + ", blogId : " + blogId); 
 
         // Q) 팩토리를 통해서 ReadController 객체를 반환받고 해당 객체의 read() 메서드로 파라미터를 전달하여 반환
@@ -36,25 +35,25 @@ public class BlogFrontController {
         return ((ReadController)controller).read(blogId);
     }
 
-    public List<BlogResponseDTO> search(String endPoint, String keyword) {
+    public ResponseEntity<List<BlogResponseDTO>> search(String endPoint, String keyword) {
         System.out.println("debug >>>> front controller endPoint : " + endPoint + ", keyword : " + keyword); 
         Object controller = factory.getBean(endPoint);
         return ((SearchController)controller).search(keyword);
     }
 
-    public int insert(String endPoint, String title, String content, String email) {
+    public ResponseEntity<Integer> insert(String endPoint, String title, String content, String email) {
         System.out.println("debug >>>> front controller endPoint : " + endPoint); 
         Object controller = factory.getBean(endPoint);
         return ((InsertController)controller).insert(title, content, email);
     }
 
-    public int delete(String endPoint, int blogId) {
+    public ResponseEntity<Integer> delete(String endPoint, int blogId) {
         System.out.println("debug >>>> front controller endPoint : " + endPoint);
         Object controller = factory.getBean(endPoint); 
         return ((DeleteController)controller).delete(blogId);
     }
 
-    public int update(String endPoint, int blogId, String title, String content) {
+    public ResponseEntity<Integer> update(String endPoint, int blogId, String title, String content) {
         System.out.println("debug >>>> front controller endPoint : " + endPoint); 
         Object controller = factory.getBean(endPoint);
         return ((UpdateController)controller).update(blogId, title, content);

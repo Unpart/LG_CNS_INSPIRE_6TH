@@ -2,6 +2,7 @@ package features.blogs.controller;
 
 import features.blogs.domain.dto.BlogResponseDTO;
 import features.blogs.service.BlogReactService;
+import features.blogs.util.ResponseEntity;
 
 public class ReadController {
     /*
@@ -16,9 +17,12 @@ public class ReadController {
         this.service = service;
     }
 
-    public BlogResponseDTO read(int blogId) {
+    public ResponseEntity<BlogResponseDTO> read(int blogId) {
         System.out.println("debug >>>> read controller read params :  "+blogId ); 
-        // Q) service read() 호출해서 반환 
-        return service.read(blogId) ;
+        try {
+            return new ResponseEntity<>(200, "ok", service.read(blogId));
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(404, e.getMessage(), null);
+        }
     }
 }

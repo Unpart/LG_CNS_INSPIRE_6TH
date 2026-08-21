@@ -114,8 +114,8 @@ public class BlogReactView {
         System.out.print("키(blogId) 입력 : ");
 
         int blogId = Integer.parseInt(scan.nextLine());
-        BlogResponseDTO response = front.read(endPoint, blogId);
-        System.out.println((response != null) ? response : "정보없음");
+        ResponseEntity<BlogResponseDTO> response = front.read(endPoint, blogId);
+        System.out.println(response.getCode() == 200 ? response.getData() : response.getMessage());
     }
 
     public void search() {
@@ -133,8 +133,8 @@ public class BlogReactView {
         System.out.print("키워드 입력 : ");
         String keyword = scan.nextLine();
 
-        List<BlogResponseDTO> response = front.search(endPoint, keyword);
-        response.stream()
+        ResponseEntity<List<BlogResponseDTO>> response = front.search(endPoint, keyword);
+        response.getData().stream()
             .forEach(System.out::println);
 
     }
@@ -153,8 +153,8 @@ public class BlogReactView {
         String email = scan.nextLine();
 
         // axios.post("insert.inspire", data);
-        int flag = front.insert(endPoint, title, content, email);
-        System.out.println((flag == 1) ? "입력성공" : "입력실패");
+        ResponseEntity<Integer> response = front.insert(endPoint, title, content, email);
+        System.out.println(response.getMessage());
     }
 
     public void update() {
@@ -172,8 +172,8 @@ public class BlogReactView {
         String content = scan.nextLine();
 
         // axios.post("update.inspire", data);
-        int flag = front.update(endPoint, blogId, title, content);
-        System.out.println((flag == 1) ? "수정성공" : "수정실패");
+        ResponseEntity<Integer> response = front.update(endPoint, blogId, title, content);
+        System.out.println(response.getMessage());
 
     }
 
@@ -184,7 +184,7 @@ public class BlogReactView {
         System.out.print("키(blogId) 입력 : ");
 
         int blogId = Integer.parseInt(scan.nextLine());
-        int response = front.delete(endPoint, blogId);
-        System.out.println((response == 1) ? "삭제성공" : "삭제실패");
+        ResponseEntity<Integer> response = front.delete(endPoint, blogId);
+        System.out.println(response.getMessage());
     }
 }
