@@ -119,4 +119,352 @@ SELECT DISTINCT CATEGORY FROM tb_department;
 
 -- Q10)
 SELECT STUDENT_NO, STUDENT_NAME, STUDENT_SSN FROM TB_STUDENT WHERE ENTRANCE_DATE LIKE '2002-%' AND STUDENT_ADDRESS LIKE '%전주%' AND ABSENCE_YN = 'N';
+
+
+
+
+
+
+
+
+
+
+
+-- SQL Day02(함수)
+/*
+함수?
+- 하나의 큰 프로그램에서 반복적으로 사용되는 부분들을 분리한 작은 서브프로그램
+- 호출하고 반환
+- 유형
+	- 단일행 함수 (문자, 날짜, 숫자, 기타변환 함수)
+	- 복수행 함수(그룹) : min, max, sum, count, avg, etc...(window function)
+- 정렬
+- 서브그룹(group by, having)
+*/
  
+SELECT *
+FROM employee;
+ 
+ -- 컬럼의 타입 : 문자, 날짜, 숫자
+ -- 문자열 함수 : 
+ -- LENGTH, CONCAT, SUBSTRING, LEFT, RIGHT, INSTR, REPLACE, UPPER, LOWER, TRIM, PAD, ...
+SELECT LENGTH('입정섭'), LENGTH('jslim'), CHAR_LENGTH('임정섭');
+
+SELECT emp_name, LENGTH(emp_name)
+FROM employee;
+
+SELECT UPPER('lgcns'), LOWER('LGCNS');
+
+SELECT TRIM('    TRIM    '), LENGTH(TRIM('    TRIM    '));
+SELECT LTRIM('    TRIM    '), LENGTH(LTRIM('    TRIM    '));
+SELECT RTRIM('    TRIM    '), LENGTH(RTRIM('    TRIM    '));
+
+-- 문자열을 채우는 함수 : LPAD, RPAD
+SELECT LPAD('5', 3,' '), LENGTH(LPAD('5', 3,' '));
+SELECT RPAD('5', 3,' '), LENGTH(RPAD('5', 3,' '));
+
+SELECT email, LENGTH(email), LPAD(email, 20, '#')
+FROM employee;
+ 
+SELECT CHAR(65), CONCAT('임정섭','님');
+ 
+ -- SUBSTRING : 부분문자열을 반환하는 함수 (LEFT, RIGHT)
+ 
+SELECT SUBSTRING('ABCDEF', 1, 2), LEFT('ABCDEF', 2), RIGHT('ABCDEF', 2);
+
+SELECT SUBSTRING('THIS IS INSPITR CAMP' FROM 9 FOR 7),
+		 SUBSTRING('THIS IS INSPITR CAMP', 9, 7),
+		 SUBSTRING_INDEX('WWW.LGCNS.COM', '.', -1);
+		 
+-- INSTR : 문자열을 이용해서 부분문자열의 인덱스를 반환
+SELECT INSTR('LGCNS CAMP', 'CAMP');
+
+-- Q) . 앞의 문자 'c' 인덱스 번지를 검색
+-- Q) 메일 아이디만 추출
+-- hint) 함수는 함수를 중첩할 수 있음
+
+SELECT INSTR(email, 'c.')
+FROM employee;
+
+SELECT SUBSTRING(email, 1, INSTR(email, '@')-1)
+FROM employee;
+
+-- 문자열 반복
+SELECT repeat('LGCNS',3),
+		 REPLACE('');
+
+SELECT LEFT(hire_date, 4)
+FROM employee;
+
+SELECT CONCAT(LEFT(emp_no, 8),'******')
+FROM employee;
+
+-- CASTING : CAST(TYPE AS TYPE)
+SELECT SUBSTRING(EMP_NO, 1, 6),
+		 SUBSTRING(EMP_NO, 8, 7),
+		 CAST(SUBSTRING(EMP_NO, 1, 6) AS INT) + CAST(SUBSTRING(EMP_NO, 8, 7) AS INT)
+FROM EMPLOYEE;
+
+USE SQLDB;
+
+SELECT *
+FROM usertbl;
+
+SELECT *
+FROM buytbl;
+
+-- 고객의 평균 구매 개수룰 검색한다면?
+SELECT AVG(AMOUNT)
+FROM buytbl;
+
+SELECT CAST(AVG(AMOUNT) AS INT)
+FROM buytbl;
+
+SELECT CAST(AVG(AMOUNT) AS SIGNED INTEGER)
+FROM buytbl;
+
+-- Q) 구매번호, 총 금액(PRICE * AMOUNT = ), 구매액(PRICE * AMOUNT)을 검색한다면?
+-- CAST() 함수 활용
+SELECT NUM AS '구매번호', 
+		 CONCAT( CAST(PRICE AS VARCHAR(10)), ' * ', CAST(AMOUNT AS VARCHAR(10)), ' = ')  AS `총 금액`, 
+		 PRICE * AMOUNT AS '구매액'
+FROM buytbl;
+
+-- 숫자함수
+SELECT ABS(-100),
+		 CEILING(4.7),
+		 CEILING(4.1),
+		 FLOOR(4.7),
+		 FLOOR(4.1),
+		 ROUND(4153.415354, 2),
+		 ROUND(4153.415354, -2),
+		 TRUNCATE(4153.415354, 2),
+		 TRUNCATE(4153.415354, -2),
+		 GREATEST(10, 20, 100, 30),
+		 LEAST(10, 20, 100, 30);
+		 
+-- 날짜함수
+SELECT NOW(),
+		 SYSDATE(),
+		 CURDATE(),
+		 CURTIME(),
+		 ADDDATE(CURDATE(), INTERVAL 30 YEAR),
+		 ADDDATE(CURDATE(), INTERVAL 2 MONTH),
+		 ADDDATE(CURDATE(), INTERVAL 2 DAY),
+		 SUBDATE(NOW(), INTERVAL 30 DAY),
+		 SUBTIME(NOW(), '13:00:00')
+		 ;
+		 
+-- 날짜타입 컬럼에 연산?
+SELECT HIRE_DATE,
+		 ADDDATE(HIRE_DATE + 1 AS DATE)
+FROM employee;
+
+-- Q) 입사일을 기준으로 근속년수가 30년이 되는 일자를 검색한다면?
+SELECT HIRE_DATE,
+		 ADDDATE(HIRE_DATE, INTERVAL 30 YEAR)
+FROM employee;
+
+-- Q) 오늘 날짜를 기준으로 근속년수가 30년이상인 사원의 모든 정보를 검색한다면?
+-- HINT) 
+SELECT DATEDIFF(CURDATE(), '2026-01-01');
+
+SELECT * 
+FROM employee
+WHERE DATEDIFF(CURDATE(), HIRE_DATE)/365 >= 30;
+
+
+-- D DEFINITION L
+DROP TABLE COUPON_TBL;
+CREATE TABLE COUPON_TBL(
+	CREATE_AT DATE,
+	END_AT DATE
+);
+
+SELECT *
+FROM COUPON_TBL;
+
+-- DML
+INSERT INTO COUPON_TBL(CREATE_AT, END_AT)
+VALUE(NOW(), ADDDATE(NOW(), INTERVAL 7 DAY));
+
+SELECT HIRE_DATE,
+		 SUBSTRING(HIRE_DATE, 1, 4),
+		 CAST(YEAR(HIRE_DATE) AS CHAR),
+		 CAST(MONTH(HIRE_DATE) AS CHAR),
+		 CAST(DAY(HIRE_DATE) AS CHAR),
+		 CAST(HOUR(HIRE_DATE) AS CHAR),
+		 CAST(MINUTE(HIRE_DATE) AS CHAR),
+		 CAST(SECOND(HIRE_DATE) AS CHAR)
+FROM employee;
+
+-- 날짜의 요일을 숫자로 반환
+-- WEEKDAY() : 0 월요일 ~ 6 일요일
+-- DAYOFWEEK() : 1 일요일 ~ 7 토요일
+
+SELECT WEEKDAY(NOW()), DAYOFWEEK(NOW());
+
+-- 기타함수
+-- 흐름제어함수(IF, IFNULL, NULLIF, CASE ~ WHEN ~ THEN ~ END)
+SELECT IF(100 > 200, 'TRUE', 'FALSE');
+SELECT CASE 10
+			WHEN 1 THEN '1'
+			WHEN 2 THEN '2'
+			ELSE '없음'
+		END '구분';
+		
+SELECT *
+FROM employee;
+
+-- 성별?
+-- Q) 부서번호가 50번인 사원의 이름, 주민번호, 성별 검색한다면?
+SELECT EMP_NAME, EMP_NO, IF(SUBSTRING(EMP_NO, 8, 1) IN('1','3'), '남자', '여자') AS '성별'
+FROM employee
+WHERE DEPT_ID = '50';
+
+SELECT EMP_NAME, EMP_NO,
+		 IF(SUBSTRING(EMP_NO, 8, 1) IN('1','3'), '남자', '여자') AS 'GENDER',
+		 CASE SUBSTRING(EMP_NO, 8, 1)
+		 	WHEN '1'	THEN '남자'
+			WHEN '2' THEN '여자'
+		 	WHEN '3'	THEN '남자'
+			WHEN '4' THEN '여자'
+			ELSE '?'
+		 END AS 'GENDER',
+		 CASE  
+		 	WHEN SUBSTRING(EMP_NO, 8, 1) IN('1','3') THEN '남자'
+			WHEN SUBSTRING(EMP_NO, 8, 1) IN('2','4') THEN '여자'
+			ELSE '?'
+		 END AS 'GENDER'
+FROM employee
+WHERE DEPT_ID = '50';
+
+-- Q) 사원테이블에서 직급(JOB_ID) 이 'J4' 사원의 이름, 사번, 사수번호(MGR_ID) 검색한다면?
+-- 조건) 사수번호가 없는 사원 MGR_ID 컬럼에 '관리자' 출력
+SELECT EMP_NAME, EMP_ID, IF(MGR_ID = '', '관리자', MGR_ID) AS 'MGR_ID'
+FROM employee
+WHERE JOB_ID = 'J4';
+
+-- Q) 급여등급을 나눠보고 싶다
+-- 300 이하면 초급, 400 이하면 중급, 초과하면 고급
+-- 사원번호, 이름, 급여, 급여등급 검색한다면?
+
+SELECT  EMP_ID AS '사원번호', EMP_NAME AS '이름', SALARY AS '급여', 
+		  CASE
+			  	WHEN SALARY <= 3000000 THEN '초급'
+			  	WHEN SALARY <= 4000000 THEN '중급'
+			  	ELSE '고급'
+			END AS '급여등급'
+FROM employee;
+
+-- Q) 남자사원에 대한 정보만 출력
+SELECT  EMP_NAME AS '이름', EMP_NO AS '주민번호', '남자' AS '성별'
+FROM employee
+WHERE SUBSTRING(EMP_NO, 8, 1) = '1';
+
+
+-- 복수행 함수 (GROUP BY ~)
+-- 여러행의 결과를 입력으로해서 하나 또는 그 이상의 결과를 반환
+-- WHERE 절에는 복수행 함수 x 
+-- SELECT 절에서는 사용가능하나, 일반컬럼은 사용할 수 없음.
+
+-- Q) 사원수를 확인하고 싶다면?
+SELECT COUNT(*),
+		 COUNT(BONUS_PCT),
+		 COUNT(IFNULL(BONUS_PCT, 0)),
+		 MIN(SALARY),
+		 MAX(SALARY),
+		 AVG(SALARY),
+		 SUM(SALARY)
+FROM employee;
+
+
+-- ORDER BY [기준컬럼 | 표현식 | 컬럼인덱스 | 컬럼 별칭] ASC | DESC
+SELECT  EMP_ID AS '사원번호', EMP_NAME AS '이름', SALARY AS '급여', 
+		  CASE
+			  	WHEN SALARY <= 3000000 THEN '초급'
+			  	WHEN SALARY <= 4000000 THEN '중급'
+			  	ELSE '고급'
+			END AS '급여등급'
+FROM employee
+ORDER BY SALARY DESC;
+
+
+-- WORKSHOP
+
+-- Q1)
+SELECT STUDENT_NO AS '학번', STUDENT_NAME AS '이름', ENTRANCE_DATE AS '입학년도'
+FROM tb_student
+WHERE DEPARTMENT_NO = '002'
+ORDER BY ENTRANCE_DATE ASC;
+
+-- Q2)
+SELECT PROFESSOR_NAME, PROFESSOR_SSN
+FROM tb_professor
+WHERE CHAR_LENGTH(PROFESSOR_NAME) != 3;
+
+-- Q3)
+SELECT PROFESSOR_NAME AS '교수이름', 
+	CAST(
+    	DATEDIFF(
+        NOW(),
+        CAST(CONCAT('19', SUBSTRING(PROFESSOR_SSN, 1, 6)) AS DATE)
+    	) / 365 AS INT
+	) AS '나이'
+FROM tb_professor
+WHERE SUBSTRING(PROFESSOR_SSN, 8, 1) = '1'
+ORDER BY 나이 ASC;
+
+-- Q4)
+SELECT SUBSTRING(PROFESSOR_NAME, 2) AS '이름'
+FROM tb_professor;
+
+-- Q5)
+SELECT STUDENT_NO, STUDENT_NAME
+FROM TB_STUDENT
+WHERE CAST( 
+			DATEDIFF(
+            NOW(),
+            CAST(
+                IF(
+                    CAST(SUBSTRING(STUDENT_SSN, 1, 2) AS INT) >= 50,
+                    CONCAT('19', SUBSTRING(STUDENT_SSN, 1, 6)),
+                    CONCAT('20', SUBSTRING(STUDENT_SSN, 1, 6))
+                )
+                AS DATE
+            )
+        ) / 365
+        AS INT
+      ) != 19;
+      
+-- Q6)
+SELECT CASE DAYOFWEEK('2020-12-25')
+			WHEN 1 THEN '일요일'
+			WHEN 2 THEN '월요일'
+			WHEN 3 THEN '화요일'
+			WHEN 4 THEN '수요일'
+			WHEN 5 THEN '목요일'
+			WHEN 6 THEN '금요일'
+			ELSE '토요일' 
+		END AS '요일';
+
+-- Q8)
+SELECT STUDENT_NO, STUDENT_NAME
+FROM tb_student
+WHERE SUBSTRING(STUDENT_NO, 1, 1) != 'A';
+
+-- Q9)
+SELECT ROUND(AVG(POINT), 1) AS '평점'
+FROM tb_grade
+WHERE STUDENT_NO = 'A517178';
+
+-- Q11)
+SELECT COUNT(*)
+FROM tb_student
+WHERE COACH_PROFESSOR_NO IS NULL;
+
+-- Q15)
+SELECT SUBSTRING(TERM_NO, 1, 4) AS '년도' , SUBSTRING(TERM_NO, 5, 2) AS '학기', ROUND(AVG(POINT), 1) AS '평점'
+FROM tb_grade
+WHERE STUDENT_NO = 'A112113'
+GROUP BY 년도, 학기 WITH ROLLUP;	
