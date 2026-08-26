@@ -463,8 +463,443 @@ SELECT COUNT(*)
 FROM tb_student
 WHERE COACH_PROFESSOR_NO IS NULL;
 
+
+
+
+
+-- SQL DAY03(GROUP BY, HAVING, JOIN)
+
+-- GROUP BY - 특정 컬럼에 대해 동일한 값을 가지는 행들을 하나의 행으로 처리(통계)
+-- GROUP BY {COLUMN | EXPR | POSITION}
+-- GROUP BY 절에 명세된 컬럼과 집계함수만 SELECT 절에 정의할 수 있다.
+
+SELECT *
+FROM employee;
+
+SELECT MIN(SALARY)
+FROM employee;
+
+-- 그룹함수는 일반적으로 GROUP BY 같이 사용되는 경우가 흔함.
+-- Q) 부서별 급여 총합을 검색하다면?
+
+SELECT DEPT_ID, SUM(SALARY)
+FROM employee
+WHERE SALARY >= 3000000
+GROUP BY DEPT_ID
+HAVING SUM(SALARY) >= 4000000;
+
+SELECT EMP_NAME, DEPT_ID, MAX(SALARY)
+FROM employee
+GROUP BY DEPT_ID
+
+-- Q) 급여등급별 인원수 집계하고 싶다면?
+
+SELECT	SALARY AS S ,
+			CASE 	WHEN
+						SALARY <= 3000000 THEN '초급'
+					WHEN
+						SALARY <= 4000000 THEN '중급'
+					ELSE '고급'
+			END AS `GRADE`,
+			COUNT(*) AS 'COUNT'
+FROM		employee 
+GROUP BY GRADE
+-- ORDER BY COUNT DESC;
+ORDER BY FIELD(GRADE, '중급', '초급', '고급')
+
+USE SQLDB;
+SELECT *
+FROM USERTBL;
+SELECT *
+FROM BUYTBL;
+
+-- Q) 사용자별 구매총액을 검색한다면?
+SELECT USERID, SUM(PRICE * AMOUNT)
+FROM buytbl
+GROUP BY USERID;
+
+-- Q) 사용자별 평균 구매 개수를 검색한다면?
+SELECT USERID, ROUND(AVG(AMOUNT))
+FROM buytbl
+GROUP BY USERID;
+
+
+-- Q) 부서번호가 50번이거나 부서가 없는 사원의 이름, 급여를 출력하되
+-- 조건) 급여가 많은 사원부터 조회
+SELECT EMP_NAME, EMP_NO, SALARY
+FROM employee
+WHERE DEPT_ID = '50' OR DEPT_ID IS NULL
+ORDER BY SALARY DESC;
+
+-- Q) 위 결과를 바탕으로 성별에 따른 평균 급여를 검색한다면?
+
+SELECT CASE 
+			WHEN SUBSTRING(EMP_NO, 8, 1) IN ('1','3') THEN '남자'
+			WHEN SUBSTRING(EMP_NO, 8, 1) IN ('2','4') THEN '여자'
+		 END AS 'GENDER',
+		 ROUND(AVG(SALARY)) AS AVG_SALARY
+FROM employee
+WHERE DEPT_ID = '50' OR DEPT_ID IS NULL
+GROUP BY GENDER
+ORDER BY AVG_SALARY DESC;
+
+-- Q) 부서별 급여 총액이 9000000 이상인 부서만 검색한다면?
+SELECT DEPT_ID,
+		 SUM(SALARY)
+FROM employee
+GROUP BY DEPT_ID
+HAVING SUM(SALARY) >= 9000000;
+
+-- Q) 사용자별 총 구매액이 100 이상인 사용자들만 검색한다면?
+SELECT USERID, SUM(PRICE * AMOUNT)
+FROM buytbl
+GROUP BY USERID
+HAVING SUM(PRICE * AMOUNT) >= 100
+ORDER BY 2 DESC;
+
+-- 계층적 즙계 결과 WITH ROLLUP
+
+-- Q) 구매한 목록 중 그룹이름별 구매비용을 검색한다면?
+SELECT GROUPNAME, SUM(PRICE * AMOUNT) AS 'NUM'
+FROM buytbl
+GROUP BY GROUPNAME, NUM WITH ROLLUP;
+
+/*
+WINDOW FUNCTION(분석함수) : 기존 행을 유지하면서 집계결과를 열 추가
+GROUP FUNCTION(AVG, RANK, ROW_NUMBER, DENSE_RANK) ~ OVER(PARTITION BY | ORDER BY)
+*/
+
+USE LGCNS;
+
+SELECT EMP_NAME, SALARY, DEPT_ID, AVG(SALARY) OVER(PARTITION BY DEPT_ID) AS 'DAVG'
+FROM employee;
+
+-- 사원의 급여 순위를 검색하고 싶다면?
+SELECT EMP_NAME, SALARY, RANK() OVER(ORDER BY SALARY DESC) AS 'RANK'
+FROM employee;
+
+SELECT EMP_NAME, SALARY, DENSE_RANK() OVER(ORDER BY SALARY DESC) AS 'RANK'
+FROM employee;
+
+SELECT EMP_NAME, SALARY, ROW_NUMBER() OVER(ORDER BY SALARY DESC) AS 'RANK'
+FROM employee;
+
+-- Q) 부서별 급여 순위 검색한다면?(부서마다 따로 순위를 정하고 싶다면)
+SELECT EMP_NAME, DEPT_ID, 
+		 RANK() OVER(PARTITION BY DEPT_ID ORDER BY SALARY DESC) AS 'RANK'
+FROM employee;
+
+-- 스킵 문항 : 10, 12, 13, 14, 15
+-- ADDITIONAL SELECTION - 함수
+
+-- Q10) 
+SELECT DEPARTMENT_NO AS '학과번호',
+       COUNT(STUDENT_NO) AS '학생수(명)'
+FROM tb_student
+GROUP BY DEPARTMENT_NO;
+
+-- Q12) 
+SELECT	SUBSTRING(TERM_NO, 1, 4) AS '년도',
+			ROUND(AVG(CAST(POINT AS DECIMAL(10, 2))), 1)	AS '년도 별 평점'
+FROM		tb_grade
+WHERE		STUDENT_NO = 'A112113'
+GROUP BY 1
+ORDER BY 1;
+
+-- Q13) 
+SELECT DEPARTMENT_NO AS '학과코드명',
+		 SUM(ABSENCE_YN = 'Y') AS '휴학생 수'
+FROM tb_student	
+GROUP BY DEPARTMENT_NO;
+
+-- Q14) 
+SELECT A.STUDENT_NAME AS '동일이름',
+       COUNT(A.STUDENT_NAME) AS '동명인 수'
+FROM tb_student A, tb_student B
+WHERE A.STUDENT_NO != B.STUDENT_NO AND A.STUDENT_NAME = B.STUDENT_NAME
+GROUP BY 1
+ORDER BY 1;
+
 -- Q15)
-SELECT SUBSTRING(TERM_NO, 1, 4) AS '년도' , SUBSTRING(TERM_NO, 5, 2) AS '학기', ROUND(AVG(POINT), 1) AS '평점'
+SELECT SUBSTRING(TERM_NO, 1, 4) AS '년도' , 
+		 SUBSTRING(TERM_NO, 5, 2) AS '학기', 
+		 ROUND(AVG(CAST(POINT AS DECIMAL (10, 2))), 1) AS '평점'
 FROM tb_grade
 WHERE STUDENT_NO = 'A112113'
 GROUP BY 년도, 학기 WITH ROLLUP;	
+
+
+/*
+JOIN
+- N개 이상인 테이블을 서로 묶어서(가상의 테이블) 하나의 결과 집합을 만들어 내는 것
+- 관계형 데이터베이스의 가장 큰 특징
+- 관계(1:1, 1:N, N:M)
+
+ANSI 표준구문
+SELECT
+FROM 	  TABLE
+[INNER] JOIN	TABLE ON (조건식)
+[INNER] JOIN	TABLE USING (컬럼명)
+
+NATURAL [INNER] JOIN TABLE;
+
+LEFT | RIGHT [OUTER] JOIN TABLE;
+*/
+SELECT E.EMP_NAME,
+		 D.DEPT_NAME
+FROM employee E, department D
+WHERE E.DEPT_ID = D.DEPT_ID;
+
+SELECT E.EMP_NAME,
+		 D.DEPT_NAME
+FROM employee E 
+JOIN department D
+	ON(E.DEPT_ID = D.DEPT_ID);
+	
+SELECT E.EMP_NAME,
+		 D.DEPT_NAME
+FROM employee E 
+JOIN department D
+	USING(DEPT_ID);
+
+-- CROSS JOIN(의미없음)
+SELECT E.EMP_NAME,
+		 D.DEPT_NAME
+FROM employee E 
+JOIN department D;
+	
+SELECT EMP_NAME,
+		 JOB_TITLE,
+		 DEPT_NAME
+FROM job J
+JOIN employee E USING(JOB_ID)
+JOIN department D USING(DEPT_ID);
+
+SELECT EMP_NAME,
+		 JOB_TITLE,
+		 DEPT_NAME
+FROM job J
+JOIN employee E ON(J.JOB_ID = E.JOB_ID)
+JOIN department D ON(E.DEPT_ID = D.DEPT_ID);
+
+SELECT EMP_NAME,
+		 JOB_TITLE,
+		 DEPT_NAME,
+		 LOC_DESCRIBE
+FROM job J
+JOIN employee E ON(J.JOB_ID = E.JOB_ID)
+JOIN department D ON(E.DEPT_ID = D.DEPT_ID)
+JOIN location L ON(D.LOC_ID = L.LOCATION_ID);
+	
+SELECT EMP_NAME,
+		 JOB_TITLE,
+		 DEPT_NAME,
+		 LOC_DESCRIBE,
+		 COUNTRY_NAME
+FROM job J
+JOIN employee E ON(J.JOB_ID = E.JOB_ID)
+JOIN department D ON(E.DEPT_ID = D.DEPT_ID)
+JOIN location L ON(D.LOC_ID = L.LOCATION_ID)
+JOIN country C ON(L.COUNTRY_ID = C.COUNTRY_ID)
+WHERE DEPT_NAME LIKE '해외%'
+		AND
+		LOC_DESCRIBE LIKE '아시아%';
+
+USE SQLDB
+SELECT *
+FROM USERTBL;
+SELECT *
+FROM BUYTBL;
+
+-- Q) 사용자의 아이디가 JYP인 유저의 이름과 구매상품을 검색한다면?
+SELECT U.name, B.prodName
+FROM usertbl U
+JOIN buytbl B ON(B.userID = U.userID)
+WHERE U.userID = 'JYP';
+
+-- Q) 사용자의 아이디, 이름, 구매상품, 주소, 연락처(MOBILE1 + MOBILE2)를 검색한다면?
+SELECT U.userID, U.name, B.prodName, U.addr, CONCAT(U.mobile1, U.mobile2) AS '연락처'
+FROM usertbl U
+JOIN buytbl B USING(userID);
+
+-- Q) 위 요구사항에서 구매이력이 있는 회원만 검색한다면?
+SELECT U.userID, U.name, B.prodName, U.addr, CONCAT(U.mobile1, U.mobile2) AS '연락처'
+FROM usertbl U
+JOIN buytbl B USING(userID);
+
+SELECT U.userID, U.name, B.prodName, U.addr, CONCAT(U.mobile1, U.mobile2) AS '연락처'
+FROM usertbl U
+LEFT JOIN buytbl B USING(userID);
+
+SELECT U.userID, U.name, U.addr, CONCAT(U.mobile1, U.mobile2) AS '연락처'
+FROM usertbl U
+WHERE EXISTS (
+					SELECT *
+					FROM buytbl B
+					WHERE U.userID = B.userID
+				 );
+
+
+-- OUTER JOIN				 
+SELECT E.EMP_NAME, D.DEPT_NAME
+FROM EMPLOYEE E
+LEFT JOIN DEPARTMENT D USING(DEPT_ID);
+
+SELECT E.EMP_NAME, D.DEPT_NAME
+FROM EMPLOYEE E
+RIGHT JOIN DEPARTMENT D USING(DEPT_ID);
+
+-- Q) 부서배치를 받지않은 사원의 이름, 부서명을 검색한다면?
+SELECT E.EMP_NAME, D.DEPT_NAME
+FROM EMPLOYEE E
+LEFT JOIN DEPARTMENT D ON(E.DEPT_ID = D.DEPT_ID)
+WHERE DEPT_NAME IS NULL;
+
+-- Q) 사원이름과 사수의 이름을 검색한다면?
+SELECT *
+FROM employee;
+
+SELECT E.EMP_NAME, M.EMP_NAME
+FROM employee E
+JOIN employee M ON(E.MGR_ID = M.MGR_ID);
+
+SELECT E.EMP_NAME, M.EMP_NAME
+FROM employee E
+LEFT JOIN employee M ON(E.MGR_ID = M.MGR_ID);
+
+SELECT E.EMP_NAME, M.EMP_NAME, S.EMP_NAME
+FROM employee E
+LEFT JOIN employee M ON(E.MGR_ID = M.MGR_ID)
+LEFT JOIN employee S ON(M.MGR_ID = S.MGR_ID);
+
+
+
+-- ADDITIONAL SELECT - OPTION 실습(1 ~ 14)
+
+-- Q1) 
+SELECT STUDENT_NAME AS '학생 이름',
+		 STUDENT_ADDRESS AS '주소지'
+FROM tb_student
+ORDER BY STUDENT_NAME;
+
+-- Q2)
+SELECT STUDENT_NAME, STUDENT_SSN
+FROM tb_student
+WHERE ABSENCE_YN = 'Y'
+ORDER BY STUDENT_SSN;
+
+-- Q3)
+SELECT STUDENT_NAME AS '학생 이름',
+		 STUDENT_NO AS '학번',
+		 STUDENT_ADDRESS AS '거주지 주소'
+FROM tb_student
+WHERE STUDENT_NO NOT LIKE 'A%' 
+		AND 
+		(
+			STUDENT_ADDRESS LIKE '강원도%' 
+			OR 
+			STUDENT_ADDRESS LIKE '경기도%' 
+		)
+ORDER BY STUDENT_NAME;
+
+-- Q4)
+SELECT P.PROFESSOR_NAME, P.PROFESSOR_SSN
+FROM tb_professor P, tb_department D
+WHERE P.DEPARTMENT_NO = D.DEPARTMENT_NO
+		AND
+		D.DEPARTMENT_NAME = '법학과'
+ORDER BY PROFESSOR_SSN;
+
+-- Q5)
+SELECT STUDENT_NO, POINT
+FROM tb_grade
+WHERE TERM_NO = '200402'
+		AND
+		CLASS_NO = 'C3118100'
+ORDER BY POINT DESC;
+
+-- Q6) 
+SELECT S.STUDENT_NO, S.STUDENT_NAME, D.DEPARTMENT_NAME
+FROM tb_student S, tb_department D
+WHERE S.DEPARTMENT_NO = D.DEPARTMENT_NO
+ORDER BY S.STUDENT_NAME;
+		
+-- Q7) 
+SELECT C.CLASS_NAME, D.DEPARTMENT_NAME
+FROM tb_class C, tb_department D
+WHERE C.DEPARTMENT_NO = D.DEPARTMENT_NO;
+
+-- Q8)
+SELECT C.CLASS_NAME, P.PROFESSOR_NAME
+FROM tb_class C, tb_professor P, tb_class_professor F
+WHERE C.CLASS_NO = F.CLASS_NO
+		AND
+		P.PROFESSOR_NO = F.PROFESSOR_NO;
+		
+-- Q9)
+SELECT C.CLASS_NAME, P.PROFESSOR_NAME
+FROM tb_class C, tb_professor P, tb_class_professor F, tb_department D
+WHERE C.CLASS_NO = F.CLASS_NO
+		AND
+		P.PROFESSOR_NO = F.PROFESSOR_NO
+		AND
+		C.DEPARTMENT_NO = D.DEPARTMENT_NO
+		AND
+		D.CATEGORY = '인문사회';
+		
+-- Q10)
+SELECT S.STUDENT_NO AS '학번', 
+		 S.STUDENT_NAME AS '학생 이름', 
+		 ROUND(AVG(CAST(G.POINT AS DECIMAL(10, 2))), 1) AS '전체 평점'
+FROM tb_student S, tb_grade G, tb_department D
+WHERE S.STUDENT_NO = G.STUDENT_NO
+		AND 
+		S.DEPARTMENT_NO = D.DEPARTMENT_NO
+		AND
+		D.DEPARTMENT_NAME = '음악학과'
+GROUP BY 1;
+
+-- Q11)
+SELECT D.DEPARTMENT_NAME AS '학과이름', S.STUDENT_NAME AS '학생이름', P.PROFESSOR_NAME AS '지도교수이름'
+FROM tb_student S, tb_department D, tb_professor P
+WHERE S.DEPARTMENT_NO = D.DEPARTMENT_NO
+		AND
+		S.COACH_PROFESSOR_NO = P.PROFESSOR_NO
+		AND
+		S.STUDENT_NO = 'A313047';
+		
+-- Q12)
+SELECT S.STUDENT_NAME, G.TERM_NO AS 'TERM_NAME'
+FROM tb_student S, tb_grade G, tb_class C
+WHERE S.STUDENT_NO = G.STUDENT_NO
+		AND
+		G.CLASS_NO = C.CLASS_NO
+		AND
+		G.TERM_NO LIKE '2007%'
+		AND
+		C.CLASS_NAME = '인간관계론';
+				
+-- Q13)
+SELECT C.CLASS_NAME, D.DEPARTMENT_NAME
+FROM tb_class C
+	  LEFT JOIN 
+	  tb_class_professor F
+	  ON C.CLASS_NO = F.CLASS_NO,
+	  tb_department D
+WHERE C.DEPARTMENT_NO = D.DEPARTMENT_NO
+		AND
+		D.CATEGORY = '예체능'
+		AND
+		F.PROFESSOR_NO IS NULL;
+		
+-- Q14)
+SELECT S.STUDENT_NAME AS '학생이름', IFNULL(P.PROFESSOR_NAME, '지도교수 미지정') AS '지도교수'
+FROM tb_student S
+	  LEFT JOIN
+	  tb_professor P
+	  ON S.COACH_PROFESSOR_NO = P.PROFESSOR_NO
+	  , tb_department D
+WHERE 
+		S.DEPARTMENT_NO = D.DEPARTMENT_NO
+		AND
+		D.DEPARTMENT_NAME = '서반아어학과'
