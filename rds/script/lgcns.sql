@@ -903,3 +903,358 @@ WHERE
 		S.DEPARTMENT_NO = D.DEPARTMENT_NO
 		AND
 		D.DEPARTMENT_NAME = '서반아어학과'
+		
+		
+		
+		
+		
+		
+		
+		
+-- SQL DAY04(SUBQUERY & DDL)
+
+/*
+서브쿼리란?
+- 하나의 쿼리가 다른 쿼리를 포함하는 구조
+- 유형(유형에 따라서 사용할 수 있는 연산자가 다름)
+	- 단일행(단일열, 다중열) : 일반연산자들
+	- 다중행(단일열, 다중열) : ANY, ALL, IN
+- 위치
+	- SELECT (SCALAR SJUBQUERY), FROM (INLINE VIEW), WHERE(SUBQUERY)
+*/
+SELECT DEPARTMENT_NO
+FROM tb_department
+WHERE DEPARTMENT_NAME = '국어국문학과';
+
+SELECT STUDENT_NAME
+FROM tb_student S
+WHERE ABSENCE_YN = 'Y'
+		AND   
+		DEPARTMENT_NO = (
+								SELECT DEPARTMENT_NO
+								FROM tb_department
+								WHERE DEPARTMENT_NAME = '국어국문학과'
+							 )
+		AND
+		SUBSTRING(S.STUDENT_SSN, 8, 1) = '2';
+		
+SELECT *
+FROM employee;
+
+-- Q) 나승원사원과 같은 직급이고 나승원사원보다 많은 급여를 받는 사원의 정보를 검색한다면?
+SELECT *
+FROM employee
+WHERE SALARY > (
+						SELECT SALARY
+						FROM employee
+						WHERE EMP_NAME = '나승원'
+					)
+		AND
+		JOB_ID = (
+						SELECT JOB_ID
+						FROM employee
+						WHERE EMP_NAME = '나승원'
+					);
+					
+-- Q) 부서별 급여총합이 가장높은 부서의 부서명과 급여총합을 검색한다면?	
+-- 아래는 오류남				
+SELECT D.DEPT_NAME, MAX(SUM(E.SALARY))
+FROM department D
+JOIN employee E ON (D.DEPT_ID = E.DEPT_ID)
+GROUP BY DEPT_NAME;
+
+SELECT D.DEPT_NAME, SUM(E.SALARY)
+FROM department D
+JOIN employee E ON (D.DEPT_ID = E.DEPT_ID)
+GROUP BY DEPT_NAME;
+
+SELECT V.DEPT_NAME, MAX(V.SUM)
+FROM (
+			SELECT D.DEPT_NAME, SUM(E.SALARY) AS 'SUM'
+			FROM department D
+			JOIN employee E ON (D.DEPT_ID = E.DEPT_ID)
+			GROUP BY DEPT_NAME
+	  ) V;
+	  
+SELECT D.DEPT_NAME, SUM(E.SALARY)
+FROM department D
+JOIN employee E ON (D.DEPT_ID = E.DEPT_ID)
+GROUP BY DEPT_NAME
+HAVING SUM(E.SALARY) = (
+								SELECT MAX(SUM_SALARY)
+								FROM (
+											SELECT SUM(SALARY) AS 'SUM_SALARY'
+											FROM department D
+											JOIN employee E ON (D.DEPT_ID = E.DEPT_ID) 
+											GROUP BY DEPT_NAME
+									  ) V
+							);
+							
+SELECT *
+FROM employee
+WHERE SALARY = (
+						SELECT MIN(SALARY)
+						FROM EMPLOYEE
+					);
+					
+					
+-- Q18)			
+SELECT S.STUDENT_NO, S.STUDENT_NAME
+FROM tb_student S
+JOIN tb_grade G ON S.STUDENT_NO = G.STUDENT_NO
+WHERE S.DEPARTMENT_NO = (
+								    SELECT DEPARTMENT_NO
+								    FROM tb_department
+								    WHERE DEPARTMENT_NAME = '국어국문학과'
+								)
+GROUP BY S.STUDENT_NO, S.STUDENT_NAME
+HAVING AVG(G.POINT) = (
+							   SELECT MAX(AVG_POINT)
+							   FROM (
+								         SELECT AVG(G2.POINT) AS AVG_POINT
+								         FROM tb_student S2
+								         JOIN tb_grade G2 ON S2.STUDENT_NO = G2.STUDENT_NO
+								         WHERE S2.DEPARTMENT_NO = (
+																            SELECT DEPARTMENT_NO
+																            FROM tb_department
+																            WHERE DEPARTMENT_NAME = '국어국문학과'
+																         )
+								         GROUP BY S2.STUDENT_NO
+								      ) T
+							);
+							
+SELECT *
+FROM employee
+WHERE SALARY = (
+						SELECT MIN(SALARY)
+						FROM EMPLOYEE
+					);
+					
+-- ERROR
+SELECT E.*, MIN(SALARY)
+FROM employee E;
+
+-- Q) 부서별 최소급여를 받는 사원의 이름, 부서명, 급여 검색한다면?
+
+SELECT E.EMP_NAME, D.DEPT_NAME, E.SALARY
+FROM employee E
+JOIN department D ON (E.DEPT_ID = D.DEPT_ID)
+GROUP BY E.DEPT_ID
+HAVING (DEPT_ID, SALARY) IN (
+										SELECT DEPT_ID, MIN(SALARY)
+										FROM employee 
+										GROUP BY DEPT_ID
+									 );
+			
+SELECT V.EMP_NAME, V.DEPT_NAME, V.SALARY						 
+FROM	(
+			SELECT E.EMP_NAME, D.DEPT_NAME, E.SALARY, RANK() OVER(PARTITION BY E.DEPT_ID ORDER BY SALARY) AS 'RANK'
+			FROM employee E
+			JOIN department D ON (E.DEPT_ID = D.DEPT_ID)
+		) V
+WHERE V.RANK = 1;
+
+-- 과장 직급의 급어 확인
+SELECT J.JOB_TITLE, E.SALARY
+FROM employee E
+JOIN job J ON(E.JOB_ID = J.JOB_ID)
+WHERE J.JOB_TITLE = '과장'
+
+-- 대리 직급의 급어 확인
+SELECT J.JOB_TITLE, E.SALARY
+FROM employee E
+JOIN job J ON(E.JOB_ID = J.JOB_ID)
+WHERE J.JOB_TITLE = '대리'
+
+-- 다중행 서브쿼리 (ANY, ALL)
+-- > ANY, < ANY
+-- > ALL, < ALL
+-- 과장직급보다 많은 급여를 받는 대리직급의 사원정보를 검색한다면?
+
+SELECT J.JOB_TITLE, E.SALARY
+FROM employee E
+JOIN job J ON(E.JOB_ID = J.JOB_ID)
+WHERE J.JOB_TITLE = '대리'
+		AND
+		SALARY > ANY(
+							SELECT E.SALARY
+							FROM employee E
+							JOIN job J ON(E.JOB_ID = J.JOB_ID)
+							WHERE J.JOB_TITLE = '과장'
+						)
+						
+SELECT J.JOB_TITLE, E.SALARY
+FROM employee E
+JOIN job J ON(E.JOB_ID = J.JOB_ID)
+WHERE J.JOB_TITLE = '대리'
+		AND
+		SALARY > ALL(
+							SELECT E.SALARY
+							FROM employee E
+							JOIN job J ON(E.JOB_ID = J.JOB_ID)
+							WHERE J.JOB_TITLE = '과장'
+						)
+						
+						
+-- TOP N QUERY === LIMIT
+-- LIMIT ~ OFSET
+
+SELECT E.DEPT_ID, SUM(SALARY)
+FROM employee E
+GROUP BY DEPT_ID
+ORDER BY 2 DESC
+LIMIT 1;
+
+-- OFFSET : N+1 번지부터 N번지까지 범위검색
+
+SELECT E.DEPT_ID, SUM(SALARY)
+FROM employee E
+GROUP BY DEPT_ID
+ORDER BY 2 DESC
+LIMIT 3 OFFSET 0;
+
+-- 상관관계 서브쿼리
+-- Q) 자기 직급의 평균급여를 받는 직원의 이름, 직급명, 급여를 검색한다면?
+-- 계산의 편의를 위해 급여는 정수 5자리까지 절삭(TRUNCATE)
+
+-- CASE 01
+SELECT E.EMP_NAME, J.JOB_TITLE, E.SALARY
+FROM job J
+JOIN employee E ON(J.JOB_ID = E.JOB_ID)
+WHERE (J.JOB_ID, E.SALARY) IN (
+											SELECT JOB_ID, TRUNCATE(AVG(SALARY), -5)
+											FROM employee E
+											GROUP BY JOB_ID
+										);
+										
+-- CASE 02
+SELECT E.EMP_NAME, J.JOB_TITLE, E.SALARY
+FROM (
+			SELECT JOB_ID, TRUNCATE(AVG(SALARY), -5) AS 'JOBAVG'
+			FROM employee E
+			GROUP BY JOB_ID
+		) V
+JOIN employee E ON(V.JOB_ID = E.JOB_ID AND V.JOBAVG = E.SALARY)	
+JOIN job J ON(J.JOB_ID = E.JOB_ID);							
+
+-- CASE 03
+SELECT E.EMP_NAME, J.JOB_TITLE, E.SALARY
+FROM job J
+JOIN employee E ON(J.JOB_ID = E.JOB_ID)
+WHERE E.SALARY =  (
+							SELECT TRUNCATE(AVG(SALARY), -5)
+							FROM employee E2
+							WHERE E2.JOB_ID = E.JOB_ID
+						);
+									
+-- Q15)
+SELECT S.STUDENT_NO AS '학번',
+		 S.STUDENT_NAME  AS '이름',
+		 D.DEPARTMENT_NAME AS '학과 이름',
+		 AVG(G.POINT) AS'평점'
+FROM (SELECT STUDENT_NO, STUDENT_NAME
+		FROM TB_STUDENT
+		WHERE ABSENCE_YN = 'N') S
+JOIN tb_department D ON(S.DEPARTMENT_NO = D.DEPARTMENT_NO)
+JOIN tb_grade G ON(S.STUDENT_NO = G.STUDENT_NO)
+GROUP BY S.STUDENT_NO
+HAVING 평점 >= '4'
+
+-- Q16)
+SELECT C.CLASS_NO, C.CLASS_NAME, AVG(G.POINT)
+FROM tb_class C
+JOIN tb_grade G USING(CLASS_NO)
+WHERE C.DEPARTMENT_NO = (SELECT DEPARTMENT_NO
+							    FROM tb_department
+							    WHERE DEPARTMENT_NAME = '환경조경학과' )
+GROUP BY C.CLASS_NO, C.CLASS_NAME;
+
+-- Q17)
+SELECT STUDENT_NAME, STUDENT_ADDRESS
+FROM tb_student
+WHERE DEPARTMENT_NO = (SELECT DEPARTMENT_NO
+								FROM tb_student
+								WHERE STUDENT_NAME = '최경희');
+
+-- Q19)	
+SELECT D.DEPARTMENT_NAME AS '계열학과명',
+       ROUND(AVG(G.POINT), 1) AS '전공평점'
+FROM tb_student S
+JOIN tb_department D ON D.DEPARTMENT_NO = S.DEPARTMENT_NO
+JOIN tb_grade G ON S.STUDENT_NO = G.STUDENT_NO
+JOIN tb_class C ON D.DEPARTMENT_NO = C.DEPARTMENT_NO
+WHERE D.CATEGORY = ( SELECT CATEGORY
+						   FROM tb_department
+						   WHERE DEPARTMENT_NAME = '환경조경학과' )
+		AND
+		C.CLASS_TYPE LIKE '%전공%'
+GROUP BY D.DEPARTMENT_NO, D.DEPARTMENT_NAME;
+
+
+-- DDL : 물리적 저장공간인 테이블 생성과 논리적 저장공간인 VIEW
+-- CREATE, ALTER, DROP
+-- CONSTRAINT : PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, CHECK
+-- DEFAULT : DML NULL 값이 입력될때 DEFAULT로 선던된 값이 자동으로 할당
+/*		
+CREATE TABLE TABLE_NAME (
+	COLUMN_NAME DATATYPE(SIZE) [DEFAULT] [CONSTRAINT TYPE]
+);
+
+OBJECT : TABLE, VIEW, INDEX, SEQUENCE, ETC....
+*/
+
+DROP DATABASE IF EXISTS TABLEDB;
+CREATE DATABASE TABLEDB;
+
+USE TABLEDB;
+
+CREATE TABLE TB_BLOG(
+	-- BLOG_ID 		VARCHAR(50) PRIMARY KEY, -- COLUMN CONSTRAINT
+	BLOG_ID 		VARCHAR(50),
+	TITLE			VARCHAR(100),
+	CONTENT		VARCHAR(100),
+	EMAIL			VARCHAR(100),
+	CREATE_AT	DATE,
+	PRIMARY KEY (BLOG_ID) -- TABLE CONSTRAINT
+);
+
+SELECT *
+FROM tb_blog;
+
+-- DML
+INSERT INTO tb_blog(BLOG_ID, TITLE, CONTENT, EMAIL, CREATE_AT)
+VALUES('1', '휴', '하루 마무리', 'jslim9413@naver.com', SYSDATE());
+
+DROP TABLE IF EXISTS tb_blog;
+
+CREATE TABLE TB_BLOG(
+	-- BLOG_ID 		VARCHAR(50) PRIMARY KEY, -- COLUMN CONSTRAINT
+	BLOG_ID 		VARCHAR(50),
+	TITLE			VARCHAR(100),
+	CONTENT		VARCHAR(100),
+	EMAIL			VARCHAR(100),
+	CREATE_AT	DATE DEFAULT SYSDATE(),
+	PRIMARY KEY (BLOG_ID) -- TABLE CONSTRAINT
+);
+
+SELECT *
+FROM tb_blog;
+
+INSERT INTO tb_blog(BLOG_ID, TITLE, CONTENT, EMAIL)
+VALUES('1', '휴', '하루 마무리', 'jslim9413@naver.com');
+
+DROP TABLE IF EXISTS tb_blog;
+
+CREATE TABLE TB_BLOG(
+	-- BLOG_ID 		VARCHAR(50) PRIMARY KEY, -- COLUMN CONSTRAINT
+	BLOG_ID 		VARCHAR(50),
+	TITLE			VARCHAR(100),
+	CONTENT		VARCHAR(100),
+	EMAIL			VARCHAR(100),
+	CATEGORY		VARCHAR(100) CHECK(CATEGORY IN('전체', '취미', '일상', '코딩')),
+	CREATE_AT	DATE DEFAULT SYSDATE(),
+	PRIMARY KEY (BLOG_ID) -- TABLE CONSTRAINT
+);
+
+INSERT INTO tb_blog(BLOG_ID, CATEGORY)
+VALUES('1', '전체');
