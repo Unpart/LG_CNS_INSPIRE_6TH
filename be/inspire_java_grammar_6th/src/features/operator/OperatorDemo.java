@@ -29,22 +29,22 @@ public class OperatorDemo {
     }   
 
     // 반환타입 O, 매개변수 O
-    public BlogResponseDTO register(String title, String content, String email) {
-        System.out.println(">>>> 반환타입 O, 매개변수 O");
-        System.out.println(">>>> 전달된 매개변수를 가지고 업무로직을 처리");
-        if(email == "jslim9413@naver.com") {
-            return new BlogResponseDTO(201,"OK");
-        } else {
-            return new BlogResponseDTO(400,"FAIL");
-        }
-    }
-    public BlogResponseDTO register(BlogRequestDTO request) {
-        if(request.getEmail() == "jslim9413@naver.com") {
-            return new BlogResponseDTO(201,"OK");
-        } else {
-            return new BlogResponseDTO(400,"FAIL");
-        }
-    }
+    // public BlogResponseDTO register(String title, String content, String email) {
+    //     System.out.println(">>>> 반환타입 O, 매개변수 O");
+    //     System.out.println(">>>> 전달된 매개변수를 가지고 업무로직을 처리");
+    //     if(email == "jslim9413@naver.com") {
+    //         return new BlogResponseDTO(201,"OK");
+    //     } else {
+    //         return new BlogResponseDTO(400,"FAIL");
+    //     }
+    // }
+    // public BlogResponseDTO register(BlogRequestDTO request) {
+    //     if(request.getEmail() == "jslim9413@naver.com") {
+    //         return new BlogResponseDTO(201,"OK");
+    //     } else {
+    //         return new BlogResponseDTO(400,"FAIL");
+    //     }
+    // }
 
     /*
     Q)

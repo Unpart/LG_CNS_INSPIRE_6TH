@@ -1657,3 +1657,113 @@ CREATE TABLE TB_AUTO_TEMP(
 INSERT INTO TB_AUTO_TEMP(CUSTOMER_NAME) VALUES('JSLIM');
 SELECT	*
 FROM		TB_AUTO_TEMP ;
+
+
+-- DML(1~8)
+
+-- Q1)
+INSERT INTO tb_class_type VALUES
+('01', '전공필수'),
+('02', '전공선택'),
+('03', '교양필수'),
+('04', '교양선택'),
+('05', '논문지도') ;
+
+SELECT *
+FROM tb_class_type;
+
+-- Q2)
+CREATE TABLE TB_학생일반정보(
+	COLUMN_NAME TYPE(SIZE) DEFAULT CONSTRAINT CONSTRAINT_NAME CONSTRAINT_TYPE,
+	....,
+	...,
+	TABLE CONSTRAINT
+);
+
+CREATE TABLE TB_학생일반정보(
+	SELECT S.STUDENT_NO AS '학번',
+			 S.STUDENT_NAME AS '학생이름',
+			 S.STUDENT_ADDRESS AS '주소'
+	FROM tb_student S
+);
+
+SELECT *
+FROM TB_학생일반정보;
+
+-- Q3)-
+CREATE TABLE TB_국어국문학과(
+	SELECT S.STUDENT_NO AS '학번',
+			 S.STUDENT_NAME AS '학생이름',
+			 CONCAT('19',SUBSTRING(S.STUDENT_SSN,1,2)) AS '출생년도',
+			 P.PROFESSOR_NAME AS '교수이름'
+	FROM tb_student S
+	JOIN tb_department D ON(S.DEPARTMENT_NO = D.DEPARTMENT_NO)
+	JOIN tb_professor P ON(S.COACH_PROFESSOR_NO = P.PROFESSOR_NO)
+	WHERE D.DEPARTMENT_NAME = '국어국문학과'
+);
+
+SELECT *
+FROM TB_국어국문학과;
+
+-- Q4)
+SELECT *
+FROM tb_department;
+
+UPDATE tb_department
+SET CAPACITY = ROUND(CAPACITY * 1.1);
+
+SELECT *
+FROM tb_department;
+
+-- Q5)
+SELECT *
+FROM tb_student
+WHERE STUDENT_NO = 'A413042';
+
+UPDATE tb_student
+SET STUDENT_ADDRESS = '서울시 종로구 숭인동 181-21'
+WHERE STUDENT_NO = 'A413042';
+
+-- Q6)
+SELECT *
+FROM tb_student;
+
+UPDATE tb_student
+SET STUDENT_SSN = SUBSTRING(STUDENT_SSN, 1, 6);
+
+-- Q7)
+UPDATE tb_grade
+SET POINT = '3.5'
+WHERE STUDENT_NO IN (SELECT STUDENT_NO
+						  FROM TB_STUDENT
+						  WHERE STUDENT_NAME = '김명훈')
+		AND
+		CLASS_NO = (SELECT CLASS_NO
+						FROM TB_CLASS
+						WHERE CLASS_NAME = '피부생리학')
+		AND
+		TERM_NO = '200501';
+		
+SELECT *
+FROM tb_grade
+WHERE STUDENT_NO IN (SELECT STUDENT_NO
+						  FROM TB_STUDENT
+						  WHERE STUDENT_NAME = '김명훈')
+		AND
+		CLASS_NO = (SELECT CLASS_NO
+						FROM TB_CLASS
+						WHERE CLASS_NAME = '피부생리학')
+		AND
+		TERM_NO = '200501';
+
+-- Q8)
+UPDATE tb_grade 
+SET POINT = NULL
+WHERE STUDENT_NO IN (SELECT STUDENT_NO
+						  FROM TB_STUDENT
+						  WHERE ABSENCE_YN = 'Y')
+SELECT *
+FROM tb_grade						  
+WHERE STUDENT_NO IN (SELECT STUDENT_NO
+						  FROM TB_STUDENT
+						  WHERE ABSENCE_YN = 'Y')
