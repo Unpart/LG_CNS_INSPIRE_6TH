@@ -1,7 +1,14 @@
 server:
-  port: 8080
+  port: 8000
 
 spring:
+
+  # spring mvc view path
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
   config:
     activate:
       on-profile: dev
