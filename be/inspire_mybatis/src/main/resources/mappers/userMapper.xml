@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.inspire_mybatis.features.users.repository.UserMapper">
+    <insert id="save" parameterType="com.example.inspire_mybatis.features.users.domain.dto.UserRequestDTO">
+        INSERT INTO SPRING_USER_TBL(email, password, name)
+        VALUES (#{email}, #{password}, #{name})
+    </insert>
+
+    <!-- findAll --> 
+
+    <select id="findAll" resultType="com.example.inspire_mybatis.features.users.domain.dto.UserResponseDTO">
+        SELECT email, password, name 
+        FROM SPRING_USER_TBL
+    </select>
+
+    <!-- login --> 
+
+    <select id="signIn" 
+            parameterType="com.example.inspire_mybatis.features.users.domain.dto.UserRequestDTO" 
+            resultType="com.example.inspire_mybatis.features.users.domain.dto.UserResponseDTO">
+        SELECT EMAIL, PASSWORD, NAME
+        FROM SPRING_USER_TBL
+        WHERE EMAIL = #{email} AND PASSWORD = #{password}
+    </select>    
+</mapper>

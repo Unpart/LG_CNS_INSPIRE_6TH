@@ -1,0 +1,17 @@
+server:
+  port: 8000
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    driver-class-name: ${DB_DRIVER}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    
+mybatis:
+  mapper-locations: classpath:/mappers/**/*Mapper.xml
+  # type-aliases-package: com.example.testcase
