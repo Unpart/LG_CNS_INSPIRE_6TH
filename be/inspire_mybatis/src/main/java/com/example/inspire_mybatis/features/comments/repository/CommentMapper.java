@@ -1,0 +1,15 @@
+package com.example.inspire_mybatis.features.comments.repository;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.example.inspire_mybatis.features.comments.domain.dto.CommentRequestDTO;
+import com.example.inspire_mybatis.features.comments.domain.dto.CommentResponseDTO;
+
+@Mapper
+public interface CommentMapper {
+    
+    public List<CommentResponseDTO> findByBlogId(Integer blogId);
+    public int save(CommentRequestDTO request);
+}

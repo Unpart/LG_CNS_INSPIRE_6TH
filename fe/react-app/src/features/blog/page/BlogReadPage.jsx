@@ -156,7 +156,8 @@ const WelcomeMessage = styled.div`
 const BlogReadPage = () => {
     const {blogId} = useParams();
     const user = localStorage.getItem('user');
-    console.log(`debug >>> BlogReadPage rendering ${blogId} , ${user}`)
+    const at = localStorage.getItem('at');
+    console.log(`debug >>> BlogReadPage rendering ${blogId} , ${user}, ${at}`)
     const moveUrl = useNavigate();
 
     // 블로그 정보
@@ -183,12 +184,19 @@ const BlogReadPage = () => {
         })
         - axios - get(blogs/&{}/&{}/${})
         */
-        await api.get(`/blogs/${blogId}?_embed=comments`)
+        const id = blogId
+
+        // await api.get(`/blogs/${id}?_embed=comments`)
+
+        // spring boot version
+            await api.get(`/blogs/read/${id}`, {
+                headers : {Authorization : at ? at : ""}
+            })
                 .then( response => {
                     console.log(`debug >>>> axios request success` , response);  
                     if(response.status === 200) {
                         setBlog(response.data);
-                        setComments(response.data.comments || []);
+                        setComments(response.data.comments);
                     }
                 })
                 .catch( error => {
@@ -212,7 +220,9 @@ const BlogReadPage = () => {
         */
        console.log(`debug >>>> commentHandler event`);
        let email = user;
-       await api.post('/comments', {blogId : Number(blogId), comment, email})
+       await api.post('/comments/insert', {blogId : Number(blogId), comment, email}, {
+                headers : {Authorization : at ? at : ""}
+            })
             .then(response => {
                 console.log(`debug >>>> axios request success`, response);
 

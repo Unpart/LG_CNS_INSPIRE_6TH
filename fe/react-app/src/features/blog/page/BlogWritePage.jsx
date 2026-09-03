@@ -133,11 +133,11 @@ const CategoryChip = styled.button`
 
 const BlogWritePage = () => {
     const user = localStorage.getItem('user');
-    const CATEGORIES = ["개발", "생활", "취미", "일상"];
+    const CATEGORIES = ["전체", "개발", "생활", "취미", "일상"];
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState("전체");
 
     const writeHandler = async () => {
         /*
@@ -148,7 +148,7 @@ const BlogWritePage = () => {
         */
        console.log(`debug >>> BlogWtitePage writeHandler`);
        console.log(`debug >>> title ${title}, content ${content}, category ${category}`)
-       await api.post('/blogs', {
+       await api.post('/blogs/insert', {
             title,
             content,
             category,

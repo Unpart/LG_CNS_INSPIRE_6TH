@@ -148,7 +148,8 @@ const SignInPage = () => {
 
                         localStorage.setItem('at', response.headers.get("Authorization"));
                         localStorage.setItem('rt', response.headers.get("Refresh-Token"));
-                        // moveUrl('/blogs/index') ;
+                        
+                        moveUrl('/blogs/index') ;
                     }
 
                 })
