@@ -43,6 +43,72 @@ const Wrapper = styled.div`
         border-color: #6366f1;
         box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
     }
+
+    & > textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 64px;
+        padding: 12px 14px;
+        resize: vertical;
+        border: 1px solid #d7dee9;
+        border-radius: 12px;
+        background: #fbfcfe;
+        color: #1e293b;
+        font-family: inherit;
+        font-size: 15px;
+        line-height: 1.55;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    & > textarea:focus {
+        outline: none;
+        border-color: #6366f1;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    & > textarea:disabled {
+        cursor: default;
+        background: #f8fafc;
+        color: #334155;
+        opacity: 1;
+    }
+
+    & > div {
+        align-self: flex-end;
+        display: flex;
+        gap: 6px;
+        margin-top: 2px;
+    }
+
+    & > div button {
+        min-width: 58px;
+        padding: 7px 12px;
+        border: 1px solid #dbe2ea;
+        border-radius: 8px;
+        background: #fff;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    & > div button:first-child:hover {
+        border-color: #818cf8;
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    & > div button:last-child {
+        border-color: #fecaca;
+        color: #ef4444;
+    }
+
+    & > div button:last-child:hover {
+        border-color: #ef4444;
+        background: #fef2f2;
+        color: #dc2626;
+    }
 `;
 
 const CommentText = styled.p`
@@ -58,25 +124,6 @@ const CommentText = styled.p`
         color: #4f46e5;
     }
 
-    & + div {
-        align-self: flex-end;
-        margin-top: 12px;
-    }
-
-    & + div button {
-        padding: 6px 12px;
-        border: 1px solid #fecaca;
-        background: #fff;
-        color: #ef4444;
-        font-size: 13px;
-        font-weight: 700;
-        transition: all 0.2s ease;
-    }
-
-    & + div button:hover {
-        border-color: #ef4444;
-        background: #fef2f2;
-    }
 `;
 
 const BlogCommentItem = ({comment, handler, updateHandler}) => {

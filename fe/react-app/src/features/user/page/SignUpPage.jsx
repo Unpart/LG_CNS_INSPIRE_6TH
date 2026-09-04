@@ -75,6 +75,13 @@ const TextLink = styled(Link)`
   }
 `;
 
+// validation error message
+const ErrorMessage = styled.p`
+  color : red ;
+  font-size : 13px ;
+  margin : 3px 0 0 2px ; 
+`;
+
 // npm install styled-components @mui/material @mui/icons-material @emotion/react @emotion/styled
 
 const SignUpPage = () => {
@@ -84,6 +91,12 @@ const SignUpPage = () => {
         email : '',
         password : ''
     }) ;
+
+    const [errors, setErrors] = useState({
+        name : '',
+        email : '',
+        password : ''
+    });
 
     // 기존값을 유지하면서 현재 입력된 필드에 대한 상태변화(업데이트)를 처리 
     const keyHandler = (e) => {
@@ -128,6 +141,8 @@ const SignUpPage = () => {
                 })
                 .catch( error => {
                     console.log(`debug >>>> axios request error` , error); 
+                    console.log(`debug >>>> axios request error` , error.response);
+                    setErrors(error.response?.data); 
                 }) 
     }
 
@@ -142,19 +157,22 @@ const SignUpPage = () => {
                             placeholder="이름 입력하세요"
                             value={form.name} 
                             onChange={keyHandler}/>
+                    { errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
                     <Input  type='email' 
                             name='email'
                             placeholder="이메일 입력하세요"
                             value={form.email} 
                             onChange={keyHandler}/>
+                    { errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
                     <Input  type='password' 
                             name='password'
                             placeholder="패스워드 입력하세요"
                             value={form.passwrd} 
                             onChange={keyHandler}/>
+                    { errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
                     <Button type='submit'>가입하기</Button>
                 </form>
-                <TextLink to='/users/signIn'>이미회원이시면 로그인</TextLink>
+                <TextLink to='/users/signIn'>이미 회원이시면 로그인</TextLink>
             </FormWrapper>
         </Container>
     )

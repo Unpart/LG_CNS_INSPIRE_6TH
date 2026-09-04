@@ -60,14 +60,17 @@ const Container = styled.div`
     & > textarea {
         box-sizing: border-box;
         width: 100%;
-        min-height: 72px;
-        margin: 0;
+        min-height: 112px;
+        margin: 8px 0 0;
         resize: vertical;
-        border: 1px solid #dbe2ea;
-        border-radius: 14px;
-        background: #f8fafc;
+        padding: 16px 18px;
+        border: 1px solid #d7dee9;
+        border-radius: 16px;
+        background: #fbfcfe;
         color: #1e293b;
         font-family: inherit;
+        font-size: 15px;
+        line-height: 1.6;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -76,6 +79,35 @@ const Container = styled.div`
         border-color: #6366f1;
         background: #fff;
         box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    & > textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    & > textarea + button {
+        align-self: flex-end;
+        min-width: 112px;
+        min-height: 42px;
+        margin-top: -8px;
+        border: 0;
+        border-radius: 10px;
+        background: #4f46e5;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    & > textarea + button:hover {
+        background: #4338ca;
+        box-shadow: 0 10px 22px rgba(79, 70, 229, 0.28);
+        transform: translateY(-2px);
+    }
+
+    & > textarea + button:active {
+        transform: translateY(0);
     }
 
     @media (max-width: 600px) { padding: 26px 20px; border-radius: 18px; }
@@ -245,11 +277,16 @@ const BlogReadPage = () => {
         - axios delete('/comment/${id}'), status 204(NO_CONTENT)
         - 삭제됨 comment id 만 필터링 해서 re-rendering
         */
-       await api.delete(`/comments/${id}`)
+        // await api.delete(`/comments/${id}`)
+
+        // spring boot version
+        await api.delete(`/comments/delete/${id}`, {
+                headers : {Authorization : at ? at : ""}
+            })
             .then(response => {
                 console.log(`debug >>>> axios request success`, response);
 
-                if(response.status === 200) {
+                if(response.status === 204) {
                     setComments(comments.filter((c) => {
                         return c.id !== id
                     }));
@@ -266,12 +303,21 @@ const BlogReadPage = () => {
         console.log(`debug >>>> commentUpdateHandler id ${id}, mention ${mention}`);
 
         // update : axios put(전체교체), patch(부분수정)
-        await api.patch(`/comments/${id}`, {
-            comment : mention
+        // await api.patch(`/comments/${id}`, {
+        
+        // spring boot version 01
+        // await api.patch(`/comments/update/${id}`, {
+        //     comment : mention,
+        // }, { headers : {Authorization : at ? at : ""} 
+        // })
+
+        // spring boot version 02
+        await api.patch(`/comments/update/${id}/${encodeURIComponent(mention)}`, null, 
+            { headers : {Authorization : at ? at : ""} 
         })
         .then( response => {
             console.log(`debug >>>> axios request success`, response);
-            if(response.status === 200) {
+            if(response.status === 204) {
                 setComments(ary => {
                     return ary.map(comment =>{
                         return comment.id === id ? {...comment, comment : mention} : comment

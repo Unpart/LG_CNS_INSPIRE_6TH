@@ -1,10 +1,15 @@
 package com.example.inspire_mybatis.features.comments.ctrl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +59,43 @@ public class CommentController {
                                                                     .id(id)
                                                                     .build())
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Integer id){
+        System.out.println("debug >>>> comment controller insert");
+        System.out.println("debug >>>> comment controller insert params (comments id): " + id);
+        int flag = commentService.delete(id);
+
+        // code : 204(no content), 404(not found)
+        return flag != 0
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    // case 01
+    // @PatchMapping("/update/{id}")
+    // public ResponseEntity<?> update(@PathVariable("id") Integer id,
+    //                                 @RequestBody Map<String, Object> map) {
+
+    // case 02
+    @PatchMapping("/update/{id}/{comment}")
+    public ResponseEntity<?> update(@PathVariable("id") Integer id,
+                                    @PathVariable("comment") String comment) {
+        System.out.println("debug >>>> comment controller update");
+        System.out.println("debug >>>> comment controller update params (comments id) : " + id);
+        System.out.println("debug >>>> comment controller update params comments : " + comment);
+        
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("comment", comment);
+
+        int flag = commentService.update(map);
+
+        // code : 204(no content), 404(not found)
+        return flag != 0
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     
 }

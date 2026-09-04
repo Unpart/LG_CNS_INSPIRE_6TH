@@ -25,6 +25,9 @@ dependencies {
 	// .env 보안이 필요한 정보를 로컬에서만 사용하고 github 공유하지 않겠다는 목적
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+	// validation lib - JSR(303)
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'

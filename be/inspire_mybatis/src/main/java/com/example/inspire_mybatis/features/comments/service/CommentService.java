@@ -1,6 +1,7 @@
 package com.example.inspire_mybatis.features.comments.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,4 +33,14 @@ public class CommentService {
         return request.getId();
     }
 
+    public int delete(Integer id) {
+        System.out.println("debug >>>> comment service delete");
+        System.out.println("debug >>>> comment service delete params : " + id);
+        return commentMapper.delete(id);
+    }
+
+    public int update(Map<String, Object> map) {
+        System.out.println("debug >>>> comment service update");
+        return commentMapper.update(map);
+    }
 }

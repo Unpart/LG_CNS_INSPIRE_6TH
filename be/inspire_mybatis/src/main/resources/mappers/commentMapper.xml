@@ -27,4 +27,17 @@
         VALUES (#{id}, #{comment}, #{email}, #{blogId})
     </insert>
 
+    <delete id="delete" parameterType="int">
+        DELETE FROM SPRING_COMMENT_TBL
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- update --> 
+
+    <update id="update" parameterType="map">
+        UPDATE SPRING_COMMENT_TBL
+        SET COMMENT = #{comment}
+        WHERE ID = #{id}
+    </update>
+    
 </mapper>       
