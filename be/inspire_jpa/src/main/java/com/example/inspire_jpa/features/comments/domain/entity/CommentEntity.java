@@ -1,0 +1,34 @@
+package com.example.inspire_jpa.features.comments.domain.entity;
+
+import com.example.inspire_jpa.features.blogs.domain.entity.BlogEntity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
+
+@Entity 
+@Table(name = "SPRING_JPA_COMMENT_TBL")
+@Builder 
+@Getter 
+@ToString 
+public class CommentEntity {
+
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer commentId;
+
+    private String comment;
+
+    private String email;
+
+    @ManyToOne 
+    @JoinColumn(name = "blogId")
+    private BlogEntity blog;
+}
