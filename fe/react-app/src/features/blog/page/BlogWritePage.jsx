@@ -134,6 +134,7 @@ const CategoryChip = styled.button`
 const BlogWritePage = () => {
     const user = localStorage.getItem('user');
     const CATEGORIES = ["전체", "개발", "생활", "취미", "일상"];
+    const at = localStorage.getItem('at');
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -146,21 +147,23 @@ const BlogWritePage = () => {
         - status code : 201(Created)
         - blog index transition
         */
-       console.log(`debug >>> BlogWtitePage writeHandler`);
-       console.log(`debug >>> title ${title}, content ${content}, category ${category}`)
-       await api.post('/blogs/insert', {
-            title,
-            content,
-            category,
-            email : user
-       })
-       .then(response => {
-            console.log(`debug >>> axios request success`, response);
+        console.log(`debug >>> BlogWtitePage writeHandler`);
+        console.log(`debug >>> title ${title}, content ${content}, category ${category}`)
+        await api.post('/blogs/insert', {
+                title,
+                content,
+                category,
+                email : user
+        }, {
+            headers : { Authorization : at ? at : "" }
+        })
+        .then(response => {
+                console.log(`debug >>> axios request success`, response);
 
-       })
-       .catch(error => {
-            console.log(`debug >>> axios request failed`, error);
-       })
+        })
+        .catch(error => {
+                console.log(`debug >>> axios request failed`, error);
+        })
     }
 
     const moveUrl = useNavigate();

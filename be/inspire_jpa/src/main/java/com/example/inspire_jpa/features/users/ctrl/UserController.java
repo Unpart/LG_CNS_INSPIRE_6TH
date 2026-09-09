@@ -121,7 +121,7 @@ public class UserController {
                                                         .password(password)
                                                         .build());
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", (String)(map.get("at")));
+        headers.add("Authorization", "Bearer " + (String)(map.get("at")));
         headers.add("Refresh-Token", (String)(map.get("rt")));
         headers.add("Access-Control-Expose-Headers", "Authorization, Refresh-Token");
 
