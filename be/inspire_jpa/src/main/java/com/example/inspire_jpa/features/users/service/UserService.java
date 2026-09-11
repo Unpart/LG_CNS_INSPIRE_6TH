@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.inspire_jpa.features.commons.exception.users.LoginFailException;
+import com.example.inspire_jpa.features.commons.redis.RedisService;
 import com.example.inspire_jpa.features.commons.token.JwtProvider;
 import com.example.inspire_jpa.features.users.domain.dto.UserRequestDTO;
 import com.example.inspire_jpa.features.users.domain.dto.UserResponseDTO;
@@ -23,6 +27,8 @@ public class UserService {
     // constructor injection 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final RedisService redisService;
+    private final PasswordEncoder passwordEncoder;
  
     @Transactional
     public UserResponseDTO signUp(UserRequestDTO request) {
@@ -48,15 +54,18 @@ public class UserService {
         System.out.println("debug >>>> user service signIn");
         
         // plain text version
-        userRepository
-            .findByEmailAndPassword(request.getEmail(), request.getPassword())
-            .orElseThrow(() -> new LoginFailException("SignIn Fail!!"));
+        // userRepository
+        //     .findByEmailAndPassword(request.getEmail(), request.getPassword())
+        //     .orElseThrow(() -> new LoginFailException("SignIn Fail!!"));
 
         // hashing verision
         userRepository
             .findById(request.getEmail())
             .orElseThrow(() -> new LoginFailException("SignIn Fail!!"));
-            // 암호화된 패스워드를 비교하는 구문
+        
+        if(passwordEncoder.matches(request.getPassword(), entity.getPassword())) {
+            throw new RuntimeException("Password Not Matches");
+        }
                       
         // 사용자 로그인이 정상적으로 수행되면 token 발급되어야 함.
         System.out.println("debug >>>> user service signIn token provider ");
@@ -66,6 +75,7 @@ public class UserService {
         // inMemory DB = Redis, H2
         // at, rt 담아서 관리 - redis - docker
         System.out.println("debug >>>> user service RT redis DB save");
+        redisService.saveToken(entity.getEmail(), rt);
 
         Map<String, Object> map = new HashMap<>();
         map.put("response", UserResponseDTO.fromEntity(entity)); 
@@ -73,5 +83,14 @@ public class UserService {
         map.put("rt", rt);
 
         return map;
+    }
+
+    public void signOut() {
+        System.out.println("debug >>>> user service signOut");
+        //////////////// email from security context holder
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        System.out.println("debug >>>> blog service insert SecurityContextHolder email : " + email);
+        redisService.deleteToken(email);
     }
 }

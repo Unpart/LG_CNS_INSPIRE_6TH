@@ -1,5 +1,6 @@
 package com.example.inspire_jpa.features.users.ctrl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +18,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.lang.module.ResolutionException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -47,7 +50,10 @@ Users ------------------> Blogs ------------------> Comments
 @RequestMapping("/users")
 public class UserController {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+
+
     
     @Operation(summary = "회원가입", description = "신규가입(email, password, name)")
     @ApiResponses({
@@ -83,7 +89,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errMap);
         }
 
-        UserResponseDTO response = userService.signUp(request);
+        ////////////// spring security password hashing add
+        // toBuilder() 통해서 일부 수정할 때 기존 객체를 복사해서 
+        UserRequestDTO hashingDTO = request.toBuilder()
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .build(); 
+        ///////////////////////////////////////////////////
+        UserResponseDTO response = userService.signUp(hashingDTO);
         return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(response);
@@ -129,6 +141,13 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .headers(headers)
                 .body((UserResponseDTO)(map.get("response"))); 
+    }
+    
+    @PostMapping("/signOut")
+    public ResponseEntity<?> signOut() {
+        System.out.println("debug >>>> user controller signOut ");
+        userService.signOut();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
 }

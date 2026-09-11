@@ -148,14 +148,14 @@ const BlogCommentItem = ({comment, handler, updateHandler}) => {
             - 당연한 json-server 수정이 되어야 함
             */
             // 수정완료모드 on
-            updateHandler(comment.id, mention); // read page : commentUpdateHandler();
+            updateHandler(comment.commentId, mention); // read page : commentUpdateHandler();
             setIsEdit(false);
         }
     }
 
     useEffect(() => {
         setMention(comment.comment);
-    }, [comment.comment]);
+    }, []);
 
     return(
         <Wrapper>
@@ -167,7 +167,7 @@ const BlogCommentItem = ({comment, handler, updateHandler}) => {
                         <Button title={isEdit ? '수정완료' : '수정'}
                                 onClick={(e) => updateMentionHandler(e)}/>
                         <Button title={'삭제'}
-                                onClick={(e) => handler(e, comment.id)}/>
+                                onClick={(e) => handler(e, comment.commentId)}/>
                     </div>
             }
         </Wrapper>

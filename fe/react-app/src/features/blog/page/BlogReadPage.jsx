@@ -284,11 +284,11 @@ const BlogReadPage = () => {
                 headers : {Authorization : at ? at : ""}
             })
             .then(response => {
-                console.log(`debug >>>> axios request success`, response);
+                console.log(`debug >>>> axios request    success`, response);
 
                 if(response.status === 204) {
                     setComments(comments.filter((c) => {
-                        return c.id !== id
+                        return c.commentId !== id
                     }));
                 }
             })

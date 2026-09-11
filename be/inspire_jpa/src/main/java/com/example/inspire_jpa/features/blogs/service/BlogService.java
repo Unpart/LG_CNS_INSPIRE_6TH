@@ -3,6 +3,8 @@ package com.example.inspire_jpa.features.blogs.service;
 import com.example.inspire_jpa.features.users.repository.UserRepository;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,11 @@ public class BlogService {
         3. save()
         */
 
+        //////////////// email from security context holder
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        System.out.println("debug >>>> blog service insert params email : " + request.getEmail());
+        System.out.println("debug >>>> blog service insert SecurityContextHolder email : " + email);
         return userRepository.findById(request.getEmail())
                     .map(user -> {
                         BlogEntity blog = blogRepository.save(
@@ -93,13 +100,13 @@ public class BlogService {
         //         .orElseThrow(() -> new RuntimeException(id + " BLOG NOT FOUND")) ;
 
         // 단순 blog
-        return blogRepository.findById(id)
-                    .map(BlogResponseDTO::fromEntity)
-                    .orElseThrow(() -> new RuntimeException(id + "BLOG NOT FOUND"));
+        // return blogRepository.findById(id)
+        //             .map(BlogResponseDTO::fromEntity)
+        //             .orElseThrow(() -> new RuntimeException(id + "BLOG NOT FOUND"));
 
         // blog + comments
-        // return blogRepository.findById(id)
-        //             .map(BlogResponseDTO::fromEntityWithComments)
-        //             .orElseThrow(() -> new RuntimeException(id + "BLOG NOT FOUND"));
+        return blogRepository.findById(id)
+                    .map(BlogResponseDTO::fromEntityWithComments)
+                    .orElseThrow(() -> new RuntimeException(id + "BLOG NOT FOUND"));
     }
 }

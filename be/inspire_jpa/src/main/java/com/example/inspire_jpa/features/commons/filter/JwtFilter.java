@@ -20,7 +20,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Component 
+// spring filler 사용으로 JWT 필터 사용안함
+// @Component 
 public class JwtFilter implements Filter{
     
     @Value ("${jwt.secret}")
