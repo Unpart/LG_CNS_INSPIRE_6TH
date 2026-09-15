@@ -60,7 +60,8 @@ public class SecurityConfig {
                     .requestMatchers(
                         "/users/**",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**").permitAll()
+                        "/v3/api-docs/**",
+                        "/openai/**").permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()

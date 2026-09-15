@@ -139,6 +139,9 @@ const BlogWritePage = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [category, setCategory] = useState("전체");
+    const [keyword, setKeyword] = useState('');
+    
+    const moveUrl = useNavigate();
 
     const writeHandler = async () => {
         /*
@@ -166,7 +169,25 @@ const BlogWritePage = () => {
         })
     }
 
-    const moveUrl = useNavigate();
+    // 
+    const keywordHandler = async () => {
+        console.log(`debug >>> keyword ${keyword}`)
+        await api.post('/blogs/ai/agent', {
+                keyword,
+                category
+        }, {
+            headers : { Authorization : at ? at : "" }
+        })
+        .then(response => {
+            console.log(`debug >>> axios request success`, response);
+            if(response.status === 201) {
+                setContent(response.data);
+            }
+        })
+        .catch(error => {
+            console.log(`debug >>> axios request failed`, error);
+        })      
+    }
 
     return(
         <Wrapper>
@@ -199,6 +220,15 @@ const BlogWritePage = () => {
                     setTitle(e.target.value);
                 }}/>
                 
+                {/* -----------------------open ai--------------------------- */}
+                <TextInput height={50} value={keyword} 
+                           placeholder="키워드를 입력하세요" handler={(e) => {
+                    setKeyword(e.target.value);
+                }}/>
+
+                <Button title='키워드 전송' onClick={keywordHandler}/>
+                {/* --------------------------------------------------------- */}
+
                 {/* content */}
                 <TextInput height={280} value={content} handler={(e) => {
                     setContent(e.target.value);

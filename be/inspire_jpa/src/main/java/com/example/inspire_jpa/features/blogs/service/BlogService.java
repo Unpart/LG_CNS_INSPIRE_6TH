@@ -2,7 +2,9 @@ package com.example.inspire_jpa.features.blogs.service;
 
 import com.example.inspire_jpa.features.users.repository.UserRepository;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import com.example.inspire_jpa.features.blogs.domain.dto.BlogRequestDTO;
 import com.example.inspire_jpa.features.blogs.domain.dto.BlogResponseDTO;
 import com.example.inspire_jpa.features.blogs.domain.entity.BlogEntity;
 import com.example.inspire_jpa.features.blogs.repository.BlogRepository;
+import com.example.inspire_jpa.features.openai.domain.RecommandResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +24,9 @@ public class BlogService {
     
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
+
+    // ai
+    private final ChatClient chatClient;
 
     @Transactional(readOnly = true)
     public List<BlogResponseDTO> list() {
@@ -108,5 +114,23 @@ public class BlogService {
         return blogRepository.findById(id)
                     .map(BlogResponseDTO::fromEntityWithComments)
                     .orElseThrow(() -> new RuntimeException(id + "BLOG NOT FOUND"));
+    }
+
+    public String contentGenerate(Map<String, Object> map) {
+        String result = chatClient
+            .prompt()
+            .user("""
+                    넌 국문학과 박사 수료한 블로그 작성 전문가야.
+                    주어진 카테고리와 키워드를 기반으로 차분한 톤의 블로그를 작성해줘.
+                    글자 수는 200자 이내로 작성해줘.
+                    <조건>
+                        - 카테고리 : "%s"
+                        - 키워드 : "%s"
+                    </조건>
+                """.formatted((String)(map.get("caetgory")), 
+                              (String)(map.get("keyword"))))
+            .call()
+            .content();
+        return result;
     }
 }

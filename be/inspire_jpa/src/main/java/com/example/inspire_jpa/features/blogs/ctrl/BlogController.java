@@ -1,6 +1,7 @@
 package com.example.inspire_jpa.features.blogs.ctrl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,5 +63,13 @@ public class BlogController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
+    @PostMapping("/ai/agent")
+    public ResponseEntity<?> agent(@RequestBody Map<String, Object> map) {
+        System.out.println("debug >>>> blog controller agent");
+        System.out.println("debug >>>> blog controller agent params : " + map.get("category"));
+        System.out.println("debug >>>> blog controller agent params : " + map.get("keyword"));
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(blogService.contentGenerate(map));
+    }
     
 }
