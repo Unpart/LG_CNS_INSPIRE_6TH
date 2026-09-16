@@ -14,6 +14,6 @@ public class InspireJpaApplication {
 			System.out.println("debug >>>> end : " + entry.getKey() + "\t" + entry.getValue());
 		});
 		SpringApplication.run(InspireJpaApplication.class, args);
-	}
+	}	
 
 }

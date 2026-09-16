@@ -1,5 +1,6 @@
 package com.example.inspire_jpa.features.blogs.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,16 @@ public interface BlogRepository extends JpaRepository<BlogEntity, Integer>{
         WHERE   b.blogId = :blogId
     """)
     public Optional<BlogEntity> findByComments(@Param("blogId") Integer blogId);
+
+    // LIKE '%keyword%'
+    // public List<BlogEntity> findByContentAndCategoryContainingIgnoreCase();
+
+    @Query("""
+        SELECT  b
+        FROM    BlogEntity b
+        WHERE   LOWER(b.content) LIKE LOWER(CONCAT('%', :content , '%'))
+        AND     b.category = :category
+    """)
+    public Optional<BlogEntity> findByContentAndCategory(@Param("content") String content,
+                                                         @Param("category") String category);
 }

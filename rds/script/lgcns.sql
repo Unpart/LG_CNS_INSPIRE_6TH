@@ -1779,8 +1779,6 @@ CREATE TABLE SPRING_USER_TBL(
 SELECT *
 FROM spring_user_tbl;
 
-DELETE from spring_user_tbl
-WHERE NAME = '';
 /*
 ID : SEQUENCE 이용
 CATEGORY : CHECK
@@ -1811,3 +1809,20 @@ FROM SPRING_COMMENT_TBL;
 
 DELETE FROM SPRING_COMMENT_TBL
 WHERE email = 'mhy7847@gmail.com'
+
+
+
+
+
+
+
+
+
+SELECT *
+FROM spring_jpa_user_tbl;
+
+SELECT *
+FROM spring_jpa_blog_tbl;
+
+SELECT *
+FROM spring_jpa_comment_tbl;

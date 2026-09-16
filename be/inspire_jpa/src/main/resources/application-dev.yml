@@ -66,3 +66,9 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET_KEY}
+
+# OPEN API
+openapi:
+  serviceKey: ${OPENAPI_SERVICE_KEY}
+  callBackUrl: ${OPENAPI_CALLBACKURL}
+  dataType: ${OPENAPI_TYPE}

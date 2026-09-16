@@ -16,10 +16,11 @@ public class OpenAIConfig {
         return new ObjectMapper();
     }
 
-    @Bean
-    public ChatClient chatClient(ChatClient.Builder builder) {
-        return builder.build();
-    }
+    // agent 이용 시 주석처리 필요함
+    // @Bean
+    // public ChatClient chatClient(ChatClient.Builder builder) {
+    //     return builder.build();
+    // }
 
     @Bean 
     public OkHttpClient okHttpClient() {
