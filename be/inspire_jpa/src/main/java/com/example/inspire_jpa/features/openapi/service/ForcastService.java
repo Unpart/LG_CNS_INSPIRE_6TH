@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.inspire_jpa.features.openapi.domain.ForcastRequestDTO;
 import com.example.inspire_jpa.features.openapi.domain.ForcastResponseDTO;
+import com.example.inspire_jpa.features.openapi.util.CategoryCode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -87,6 +88,21 @@ public class ForcastService {
         }
         list.stream().forEach(System.out::println);
 
-        return null;
+        // Q) stream() - map() - toList()
+        // categoryName에 값을 할당하는 구현
+        list = list.stream()
+                .map(dto -> {
+                    dto.setCategoryName(CategoryCode.valueOf(dto.getCategory()).getName());
+                    String value = CategoryCode.getCodeValue(dto.getCategory(), dto.getFcstValue());
+                    String unit = CategoryCode.valueOf(dto.getCategory()).getUnit();
+                    dto.setFcstValue(value + unit);
+                    return dto;
+                })
+                .toList();
+
+        System.out.println();
+        list.stream().forEach(System.out::println);
+
+        return list;
     }
 }

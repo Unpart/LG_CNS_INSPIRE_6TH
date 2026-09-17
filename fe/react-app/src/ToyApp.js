@@ -5,6 +5,7 @@ import SignUpPage from "./features/user/page/SignUpPage";
 import BlogWritePage from "./features/blog/page/BlogWritePage";
 import BlogReadPage from "./features/blog/page/BlogReadPage";
 import WeatherPage from "./features/openapi/page/WeatherPage";
+import ForcastPage from "./features/forcast/page/ForcastPage";
 
 
 const ToyApp = () => {
@@ -22,6 +23,9 @@ const ToyApp = () => {
                 
                 {/* open api */}
                 <Route path="/openapi/index" element={<WeatherPage/>}/>
+
+                {/* forcast api */}
+                <Route path="/forcast/index" element={<ForcastPage/>}/>
             </Routes>
         </BrowserRouter>
     );

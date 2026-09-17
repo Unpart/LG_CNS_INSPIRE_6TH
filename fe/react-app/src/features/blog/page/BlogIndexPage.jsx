@@ -224,6 +224,10 @@ const BlogIndexPage = () => {
                 });
     };
 
+    const forcastHandler = (e) => {
+        moveUrl("/forcast/index");
+    }
+
     return (
         <Wrapper>
             <Container>
@@ -233,7 +237,8 @@ const BlogIndexPage = () => {
                             onClick={(e) => writeHandler(e)}></Button>
                     <Button title='로그아웃'
                             onClick={(e) => logoutHandler(e)}></Button>
-                    <Button title='기상예보'></Button>
+                    <Button title='기상예보'
+                            onClick={(e) => forcastHandler(e)}></Button>
                     <Button title='OpenAPI'
                             onClick={(e) => moveUrl('/openapi/index')}></Button>
                 </ButtonRow>
